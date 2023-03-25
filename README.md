@@ -1,3 +1,3 @@
-# React 　＆ Tailwindow CSS
+# React ＆ Tailwindow CSS
 
 npm install をする
