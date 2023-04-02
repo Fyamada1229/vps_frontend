@@ -1,19 +1,19 @@
 import axios from "axios";
-import { ADD } from "./actions";
+import { SET_ADD } from "./actions";
 
 const initialState = {};
 
 //reducer
 const usersReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SET_ADD":
+    case SET_ADD:
       return { ...state, user: action.payload };
     default:
       return state;
   }
 };
 
-export const postUser = (data) => {
+export const registerUser = (data) => {
   return axios
     .post("http://localhost:80/api/register", data)
     .then((response) => {
@@ -29,6 +29,7 @@ export const loginUser = (data) => {
     .post("http://localhost:80/api/login", data)
     .then((response) => {
       const token = response.data.token;
+      console.log(token);
       localStorage.setItem("token", token);
       window.location.href = "/home";
     })
@@ -39,7 +40,7 @@ export const loginUser = (data) => {
 
 export const getUser = () => {
   return async (dispatch) => {
-    const res = await fetch("http://localhost:8000/api/users");
+    const res = await fetch("http://localhost:80/api/users");
     const data = await res.json();
     dispatch({
       type: "GET_USERS_DATA",

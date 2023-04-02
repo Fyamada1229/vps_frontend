@@ -6,7 +6,7 @@ import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { connect, useSelector, useDispatch } from "react-redux";
 import { Field, reduxForm, initialize } from "redux-form";
-import { postUser } from "../reducers/usersReducer";
+import { registerUser } from "../reducers/usersReducer";
 import { useHistory } from "react-router-dom";
 
 const NewConfrim = (props) => {
@@ -14,23 +14,20 @@ const NewConfrim = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [post, setPost] = useState(false);
-  const { handleSubmit, pristine, submitting, values, initializeForm } = props;
 
   const user = Object.entries(userReducer);
   const data = user?.map((data) => data[1]);
 
   const onPost = (values) => {
-    reduxForm();
-    postUser(values).then(() => {
-      history.push("/");
+    resetForm();
+    registerUser(values).then(() => {
+      history.push("/home");
     });
   };
 
-  const restForm = () => {
+  const resetForm = () => {
     dispatch(initialize("newForm", {}));
   };
-
-  console.log(userReducer);
 
   return (
     <>
@@ -82,4 +79,4 @@ const NewConfrim = (props) => {
   );
 };
 
-export default connect()(reduxForm({ form: "newConfrim" })(NewConfrim));
+export default reduxForm({ form: "newConfrim" })(NewConfrim);

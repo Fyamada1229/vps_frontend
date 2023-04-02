@@ -38,12 +38,12 @@ const renderField = (field) => {
   );
 };
 
+const onPost = (data) => {
+  loginUser(data);
+};
+
 const Login = (props) => {
   const { handleSubmit } = props;
-
-  const onPost = (data) => {
-    loginUser(data);
-  };
 
   return (
     <>

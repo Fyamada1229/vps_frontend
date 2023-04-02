@@ -5,7 +5,7 @@ import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { connect, useSelector, useDispatch } from "react-redux";
 import { Field, reduxForm, getFormValues, initialize } from "redux-form";
-import { SET_ADD } from "../reducers/actions";
+import { SET_ADD, addUser } from "../reducers/actions";
 
 const renderField = (field) => {
   const {
@@ -40,10 +40,6 @@ const New = (props) => {
   const formValue = useSelector((state) => state?.form?.newForm?.values);
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
-
-  const formUser = () => {
-    dispatch({ type: SET_ADD, payload: formValue });
-  };
 
   const restForm = () => {
     dispatch(initialize("newForm", {}));
@@ -93,7 +89,10 @@ const New = (props) => {
               </Button>
             </Link>
             <Link to="/new_confrim">
-              <Button className={styles.button} onClick={formUser}>
+              <Button
+                className={styles.button}
+                onClick={() => dispatch(addUser(formValue))}
+              >
                 確認画面へ
               </Button>
             </Link>
