@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../Login.css";
 import styles from "../styles.module.css";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { connect, useSelector, useDispatch } from "react-redux";
-import { Field, reduxForm, getFormValues } from "redux-form";
+import { Field, reduxForm, getFormValues, initialize } from "redux-form";
 import { SET_ADD } from "../reducers/actions";
 
 const renderField = (field) => {
@@ -38,11 +38,15 @@ const renderField = (field) => {
 
 const New = (props) => {
   const formValue = useSelector((state) => state?.form?.newForm?.values);
-  const dispatch = useDispatch();
   const state = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   const formUser = () => {
     dispatch({ type: SET_ADD, payload: formValue });
+  };
+
+  const restForm = () => {
+    dispatch(initialize("newForm", {}));
   };
 
   console.log(state);
@@ -84,7 +88,9 @@ const New = (props) => {
             </Form.Group>
 
             <Link className="pr-10" to="/">
-              <Button className={styles.buttonBack}>戻る</Button>
+              <Button className={styles.buttonBack} onClick={restForm}>
+                戻る
+              </Button>
             </Link>
             <Link to="/new_confrim">
               <Button className={styles.button} onClick={formUser}>
@@ -103,4 +109,8 @@ const validate = (values) => {
   return errors;
 };
 
-export default reduxForm({ validate, form: "newForm" })(New);
+export default reduxForm({
+  validate,
+  form: "newForm",
+  destroyOnUnmount: false,
+})(New);

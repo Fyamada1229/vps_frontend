@@ -4,54 +4,30 @@ import "../Login.css";
 import styles from "../styles.module.css";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { connect, useSelector } from "react-redux";
-import { Field, reduxForm } from "redux-form";
+import { connect, useSelector, useDispatch } from "react-redux";
+import { Field, reduxForm, initialize } from "redux-form";
 import { postUser } from "../reducers/usersReducer";
 import { useHistory } from "react-router-dom";
-
-const renderField = (field) => {
-  const {
-    input,
-    label,
-    type,
-    id,
-    meta: { touched, error },
-  } = field;
-
-  console.log(error);
-
-  return (
-    <div>
-      <label
-        className="text-sm text-gray-700 block mb-2 mt-2 font-medium"
-        htmlFor={id}
-      >
-        {label}
-      </label>
-      <input
-        id={id}
-        placeholder={label}
-        type={type}
-        className="bg-gray-100 border border-gray-200 rounded py-1 px-3 block focus:ring-blue-500 focus:border-blue-500 text-gray-800 w-full mb-3"
-      />
-      {touched && error && <span className="text-red-500">{error}</span>}
-    </div>
-  );
-};
 
 const NewConfrim = (props) => {
   const userReducer = useSelector((state) => state?.usersReducer);
   const history = useHistory();
+  const dispatch = useDispatch();
   const [post, setPost] = useState(false);
+  const { handleSubmit, pristine, submitting, values, initializeForm } = props;
 
   const user = Object.entries(userReducer);
   const data = user?.map((data) => data[1]);
 
   const onPost = (values) => {
-    console.log(values);
+    reduxForm();
     postUser(values).then(() => {
       history.push("/");
     });
+  };
+
+  const restForm = () => {
+    dispatch(initialize("newForm", {}));
   };
 
   console.log(userReducer);
@@ -66,11 +42,11 @@ const NewConfrim = (props) => {
           {post == true ? (
             <Form className="w-2/5 m-auto smax:w-80" onSubmit={onPost(data[0])}>
               <Form.Group controlId="formBasicEmail">
-                <Field name="name" component="input" type="text" />
+                <Field name="name" component="input" type="hidden" />
                 {data[0]?.name}
-                <Field name="email" component="input" type="text" />
+                <Field name="email" component="input" type="hidden" />
                 {data[0]?.email}
-                <Field name="password" component="input" type="text" />
+                <Field name="password" component="input" type="hidden" />
                 {data[0]?.password}
               </Form.Group>
               <Link className="pr-10" to="/">
@@ -81,11 +57,11 @@ const NewConfrim = (props) => {
           ) : (
             <Form className="w-2/5 m-auto smax:w-80">
               <Form.Group controlId="formBasicEmail">
-                <Field name="name" component="input" type="text" />
+                <Field name="name" component="input" type="hidden" />
                 {data[0]?.name}
-                <Field name="email" component="input" type="text" />
+                <Field name="email" component="input" type="hidden" />
                 {data[0]?.email}
-                <Field name="password" component="input" type="text" />
+                <Field name="password" component="input" type="hidden" />
                 {data[0]?.password}
               </Form.Group>
               <Link className="pr-10" to="/new">
@@ -106,4 +82,4 @@ const NewConfrim = (props) => {
   );
 };
 
-export default reduxForm({ form: "newConfrim" })(NewConfrim);
+export default connect()(reduxForm({ form: "newConfrim" })(NewConfrim));

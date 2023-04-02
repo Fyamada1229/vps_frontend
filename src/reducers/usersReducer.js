@@ -24,17 +24,17 @@ export const postUser = (data) => {
     });
 };
 
-export const loginUser = (values) => {
-  console.log(values);
-  return async (dispatch) => {
-    const res = await axios.post("http://localhost:80/api/login", values);
-    const data = res;
-    console.log(data);
-    dispatch({
-      type: "LOGIN_USERS_DATA",
-      payload: data,
+export const loginUser = (data) => {
+  return axios
+    .post("http://localhost:80/api/login", data)
+    .then((response) => {
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      window.location.href = "/home";
+    })
+    .catch((error) => {
+      console.error(error);
     });
-  };
 };
 
 export const getUser = () => {
