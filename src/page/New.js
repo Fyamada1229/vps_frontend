@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { connect, useSelector, useDispatch } from "react-redux";
 import { Field, reduxForm, getFormValues, initialize } from "redux-form";
 import { SET_ADD, addUser } from "../reducers/actions";
+import { withRouter } from "react-router-dom";
 
 const renderField = (field) => {
   const {
@@ -40,6 +41,8 @@ const New = (props) => {
   const formValue = useSelector((state) => state?.form?.newForm?.values);
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
+
+  const NewWithRouter = withRouter(New);
 
   const restForm = () => {
     dispatch(initialize("newForm", {}));
@@ -88,7 +91,7 @@ const New = (props) => {
                 戻る
               </Button>
             </Link>
-            <Link to="/new_confrim">
+            <Link to={{ pathname: "/new_confrim", state: { formValue } }}>
               <Button
                 className={styles.button}
                 onClick={() => dispatch(addUser(formValue))}

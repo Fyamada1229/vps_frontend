@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Login.css";
 import styles from "../styles.module.css";
@@ -8,6 +8,7 @@ import { connect, useSelector, useDispatch } from "react-redux";
 import { Field, reduxForm, initialize } from "redux-form";
 import { registerUser } from "../reducers/usersReducer";
 import { useHistory } from "react-router-dom";
+import { SET_ADD } from "../reducers/actions";
 
 const NewConfrim = (props) => {
   const userReducer = useSelector((state) => state?.usersReducer);
@@ -15,8 +16,18 @@ const NewConfrim = (props) => {
   const dispatch = useDispatch();
   const [post, setPost] = useState(false);
 
+  const formValue = useSelector((state) => state?.form?.newForm?.values);
+
   const user = Object.entries(userReducer);
   const data = user?.map((data) => data[1]);
+
+  const { handleSubmit } = props;
+
+  console.log(formValue);
+
+  useEffect(() => {
+    dispatch(initialize("newForm", formValue));
+  }, [dispatch, formValue]);
 
   const onPost = (values) => {
     resetForm();
@@ -67,7 +78,9 @@ const NewConfrim = (props) => {
               <Button
                 type="submit"
                 className={styles.button}
-                onClick={() => setPost(true)}
+                onClick={() => {
+                  dispatch({ type: SET_ADD, payload: formValue });
+                }}
               >
                 新規登録
               </Button>

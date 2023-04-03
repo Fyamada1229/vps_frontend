@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Field, reduxForm } from "redux-form";
-import { Form, Button } from "react-bootstrap";
+import { reduxForm } from "redux-form";
+import { Button } from "react-bootstrap";
 import styles from "../styles.module.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
