@@ -11,7 +11,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import reducers from "./reducers/store";
 import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
-import thunk from "redux-thunk";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 const store = createStore(

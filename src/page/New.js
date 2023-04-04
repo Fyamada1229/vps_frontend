@@ -41,7 +41,6 @@ const New = (props) => {
   const formValue = useSelector((state) => state?.form?.newForm?.values);
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
-
   const NewWithRouter = withRouter(New);
 
   const restForm = () => {

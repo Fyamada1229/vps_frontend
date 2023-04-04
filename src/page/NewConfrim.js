@@ -5,10 +5,9 @@ import styles from "../styles.module.css";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { connect, useSelector, useDispatch } from "react-redux";
-import { Field, reduxForm, initialize } from "redux-form";
+import { Field, reduxForm, initialize, formValues } from "redux-form";
 import { registerUser } from "../reducers/usersReducer";
 import { useHistory } from "react-router-dom";
-import { SET_ADD } from "../reducers/actions";
 
 const NewConfrim = (props) => {
   const userReducer = useSelector((state) => state?.usersReducer);
@@ -16,29 +15,21 @@ const NewConfrim = (props) => {
   const dispatch = useDispatch();
   const [post, setPost] = useState(false);
 
-  const formValue = useSelector((state) => state?.form?.newForm?.values);
-
   const user = Object.entries(userReducer);
   const data = user?.map((data) => data[1]);
 
-  const { handleSubmit } = props;
-
-  console.log(formValue);
-
-  useEffect(() => {
-    dispatch(initialize("newForm", formValue));
-  }, [dispatch, formValue]);
-
   const onPost = (values) => {
-    resetForm();
+    console.log(values);
     registerUser(values).then(() => {
       history.push("/home");
     });
   };
 
-  const resetForm = () => {
-    dispatch(initialize("newForm", {}));
-  };
+  useEffect(() => {
+    if (!post) {
+      dispatch(initialize("newForm", {}));
+    }
+  }, [post]);
 
   return (
     <>
@@ -47,7 +38,7 @@ const NewConfrim = (props) => {
           新規登録
         </h1>
         <div className="border w-2/4 m-auto smax:mt-10 smax:w-11/12">
-          {post == true ? (
+          {post && (
             <Form className="w-2/5 m-auto smax:w-80" onSubmit={onPost(data[0])}>
               <Form.Group controlId="formBasicEmail">
                 <Field name="name" component="input" type="hidden" />
@@ -62,7 +53,8 @@ const NewConfrim = (props) => {
               </Link>
               <Button className={styles.button}>新規登録</Button>
             </Form>
-          ) : (
+          )}
+          {!post && (
             <Form className="w-2/5 m-auto smax:w-80">
               <Form.Group controlId="formBasicEmail">
                 <Field name="name" component="input" type="hidden" />
@@ -78,9 +70,7 @@ const NewConfrim = (props) => {
               <Button
                 type="submit"
                 className={styles.button}
-                onClick={() => {
-                  dispatch({ type: SET_ADD, payload: formValue });
-                }}
+                onClick={() => setPost(true)}
               >
                 新規登録
               </Button>
