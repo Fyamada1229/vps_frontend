@@ -38,6 +38,19 @@ export const loginUser = (data) => {
     });
 };
 
+export const logOut = (data) => {
+  console.log(localStorage.getItem("token"));
+  return axios
+    .post("http://localhost:80/api/logout", null, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+    .catch((error) => {
+      console.log("logOutでエラーがあります。");
+    });
+};
+
 export const getUser = () => {
   return async (dispatch) => {
     const res = await fetch("http://localhost:80/api/users");

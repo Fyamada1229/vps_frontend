@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import "../Login.css";
 import styles from "../styles.module.css";
@@ -11,25 +11,26 @@ import { useHistory } from "react-router-dom";
 
 const NewConfrim = (props) => {
   const userReducer = useSelector((state) => state?.usersReducer);
+  const formValue = useSelector((state) => state);
   const history = useHistory();
   const dispatch = useDispatch();
-  const [post, setPost] = useState(false);
+
+  console.log(formValue);
 
   const user = Object.entries(userReducer);
   const data = user?.map((data) => data[1]);
 
-  const onPost = (values) => {
-    console.log(values);
-    registerUser(values).then(() => {
+  const onPost = (event) => {
+    event.preventDefault();
+    registerUser(data[0]).then(() => {
+      reset();
       history.push("/home");
     });
   };
 
-  useEffect(() => {
-    if (!post) {
-      dispatch(initialize("newForm", {}));
-    }
-  }, [post]);
+  const reset = () => {
+    dispatch(initialize("newForm", {}));
+  };
 
   return (
     <>
@@ -38,44 +39,22 @@ const NewConfrim = (props) => {
           新規登録
         </h1>
         <div className="border w-2/4 m-auto smax:mt-10 smax:w-11/12">
-          {post && (
-            <Form className="w-2/5 m-auto smax:w-80" onSubmit={onPost(data[0])}>
-              <Form.Group controlId="formBasicEmail">
-                <Field name="name" component="input" type="hidden" />
-                {data[0]?.name}
-                <Field name="email" component="input" type="hidden" />
-                {data[0]?.email}
-                <Field name="password" component="input" type="hidden" />
-                {data[0]?.password}
-              </Form.Group>
-              <Link className="pr-10" to="/">
-                <Button className={styles.buttonBack}>戻る</Button>
-              </Link>
-              <Button className={styles.button}>新規登録</Button>
-            </Form>
-          )}
-          {!post && (
-            <Form className="w-2/5 m-auto smax:w-80">
-              <Form.Group controlId="formBasicEmail">
-                <Field name="name" component="input" type="hidden" />
-                {data[0]?.name}
-                <Field name="email" component="input" type="hidden" />
-                {data[0]?.email}
-                <Field name="password" component="input" type="hidden" />
-                {data[0]?.password}
-              </Form.Group>
-              <Link className="pr-10" to="/new">
-                <Button className={styles.buttonBack}>戻る</Button>
-              </Link>
-              <Button
-                type="submit"
-                className={styles.button}
-                onClick={() => setPost(true)}
-              >
-                新規登録
-              </Button>
-            </Form>
-          )}
+          <Form className="w-2/5 m-auto smax:w-80" onSubmit={onPost}>
+            <Form.Group controlId="formBasicEmail">
+              <Field name="name" component="input" type="hidden" />
+              {data[0]?.name}
+              <Field name="email" component="input" type="hidden" />
+              {data[0]?.email}
+              <Field name="password" component="input" type="hidden" />
+              {data[0]?.password}
+            </Form.Group>
+            <Link className="pr-10" to="/new">
+              <Button className={styles.buttonBack}>戻る</Button>
+            </Link>
+            <Button type="submit" className={styles.button}>
+              新規登録
+            </Button>
+          </Form>
         </div>
       </div>
     </>

@@ -5,12 +5,18 @@ import { Button } from "react-bootstrap";
 import styles from "../styles.module.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { logOut } from "../reducers/usersReducer";
+import { useHistory } from "react-router-dom";
 
 const Home = (props) => {
+  const history = useHistory();
   const dispatch = useDispatch();
 
-  const resetForm = () => {
-    dispatch(initialize("newForm", {}));
+  const onLogout = () => {
+    logOut().then(() => {
+      console.log("ok");
+      history.push("/");
+    });
   };
 
   return (
@@ -19,9 +25,9 @@ const Home = (props) => {
         <h1 className="lg:w-1/5 lg:m-auto pt-10 pb-10 smax:w-10/12 smax:m-auto smax:pt-5 ">
           home画面です。
         </h1>
-        <Link className="pr-10" to="/">
-          <Button className={styles.buttonBack}>戻る</Button>
-        </Link>
+        <Button className={styles.button} onClick={onLogout}>
+          ログアウト
+        </Button>
       </div>
     </>
   );
