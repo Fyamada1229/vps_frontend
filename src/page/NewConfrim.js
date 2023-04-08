@@ -22,7 +22,7 @@ const NewConfrim = (props) => {
 
   const onPost = (event) => {
     event.preventDefault();
-    registerUser(data[0]).then(() => {
+    dispatch(registerUser(data[0])).then(() => {
       reset();
       history.push("/home");
     });

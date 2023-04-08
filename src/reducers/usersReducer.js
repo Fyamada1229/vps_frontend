@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SET_ADD } from "./actions";
+import { SET_ADD, REGISTER_USER, GET_USER, GET_DATA } from "./actions";
 
 const initialState = {};
 
@@ -8,20 +8,34 @@ const usersReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_ADD:
       return { ...state, user: action.payload };
+    case REGISTER_USER:
+      return { ...state, user: action.payload };
+    case GET_DATA:
+      return { ...state, user: action.payload };
     default:
       return state;
   }
 };
 
+// Action creators
+const registerUserSuccess = (user) => ({
+  type: REGISTER_USER,
+  payload: user,
+});
+
 export const registerUser = (data) => {
-  return axios
-    .post("http://localhost:80/api/register", data)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      throw error;
-    });
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:80/api/register",
+        data
+      );
+      const newUser = response.data;
+      dispatch(registerUserSuccess(newUser));
+    } catch (error) {
+      console.error("登録処理ができません:", error);
+    }
+  };
 };
 
 export const loginUser = (data) => {
@@ -38,6 +52,19 @@ export const loginUser = (data) => {
     });
 };
 
+export const getData = () => {
+  return (dispatch) => {
+    fetch("http://localhost:80/api/users")
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({
+          type: GET_DATA,
+          payload: data,
+        });
+      });
+  };
+};
+
 export const logOut = (data) => {
   console.log(localStorage.getItem("token"));
   return axios
@@ -49,17 +76,6 @@ export const logOut = (data) => {
     .catch((error) => {
       console.log("logOutでエラーがあります。");
     });
-};
-
-export const getUser = () => {
-  return async (dispatch) => {
-    const res = await fetch("http://localhost:80/api/users");
-    const data = await res.json();
-    dispatch({
-      type: "GET_USERS_DATA",
-      payload: data,
-    });
-  };
 };
 
 export default usersReducer;
