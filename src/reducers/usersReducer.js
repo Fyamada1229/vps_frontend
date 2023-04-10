@@ -1,5 +1,6 @@
 import axios from "axios";
-import { SET_ADD, REGISTER_USER, GET_USER, GET_DATA } from "./actions";
+import { SET_ADD, REGISTER_USER, GET_DATA } from "./actions";
+import setAuthToken from "../setAuthToken";
 
 const initialState = {};
 
@@ -18,7 +19,7 @@ const usersReducer = (state = initialState, action) => {
 };
 
 // Action creators
-const registerUserSuccess = (user) => ({
+export const registerUserSuccess = (user) => ({
   type: REGISTER_USER,
   payload: user,
 });
@@ -42,19 +43,34 @@ export const loginUser = (data) => {
   return axios
     .post("http://localhost:80/api/login", data)
     .then((response) => {
+      console.log(response.data);
       const token = response.data.token;
-      console.log(token);
+
+      // トークンを設定
+      setAuthToken(token);
+
       localStorage.setItem("token", token);
       window.location.href = "/home";
     })
     .catch((error) => {
-      console.error(error);
+      if (error.response && error.response.status === 401) {
+        const redirectUrl = error.response.data.redirect_url;
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+        }
+      } else {
+        console.error("Error occurred:", error);
+      }
     });
 };
 
 export const getData = () => {
   return (dispatch) => {
-    fetch("http://localhost:80/api/users")
+    fetch("http://localhost:80/api/users", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         dispatch({
@@ -66,15 +82,19 @@ export const getData = () => {
 };
 
 export const logOut = (data) => {
-  console.log(localStorage.getItem("token"));
   return axios
     .post("http://localhost:80/api/logout", null, {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     })
+    .then((response) => {
+      // レスポンスが成功した場合、トークンを削除し、ログインページにリダイレクトします。
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    })
     .catch((error) => {
-      console.log("logOutでエラーがあります。");
+      console.log("logOutでエラーがあります");
     });
 };
 

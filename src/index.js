@@ -15,6 +15,7 @@ import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { createRoot } from "react-dom/client";
+import PrivateRoute from "./PrivateRoute";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -27,12 +28,17 @@ root.render(
   <Provider store={store}>
     <BrowserRouter>
       <Switch>
-        <Route exact path="/product" component={Product} />
-        <Route exact path="/" component={App} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/new" component={New} />
-        <Route exact path="/new_confrim" component={NewConfrim} />
-        <Route exact path="/home" component={Home} />
+        <PrivateRoute exact path="/product" component={Product} isPublic />
+        <PrivateRoute exact path="/" component={App} isPublic />
+        <PrivateRoute exact path="/login" component={Login} isPublic />
+        <PrivateRoute exact path="/new" component={New} isPublic />
+        <PrivateRoute
+          exact
+          path="/new_confrim"
+          component={NewConfrim}
+          isPublic
+        />
+        <PrivateRoute path="/home" component={Home} />
       </Switch>
     </BrowserRouter>
   </Provider>

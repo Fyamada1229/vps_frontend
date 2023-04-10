@@ -6,7 +6,7 @@ import styles from "../styles.module.css";
 import { logOut } from "../reducers/usersReducer";
 import { useHistory } from "react-router-dom";
 import { getData } from "../reducers/usersReducer";
-import { data } from "autoprefixer";
+import { Link } from "react-router-dom";
 
 const Home = (props) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -58,8 +58,9 @@ const Home = (props) => {
               <thead>
                 <tr>
                   <th>id</th>
-                  <th>Last Name</th>
+                  <th>Name</th>
                   <th>Email</th>
+                  <th>Details</th>
                 </tr>
               </thead>
               <tbody>
@@ -68,6 +69,7 @@ const Home = (props) => {
                     <td>{data.id}</td>
                     <td>{data.name}</td>
                     <td>{data.email}</td>
+                    <td></td>
                   </tr>
                 ))}
               </tbody>
@@ -78,6 +80,9 @@ const Home = (props) => {
           <Button className={`${styles.button} btn-block`} onClick={onLogout}>
             ログアウト
           </Button>
+          <Link className="pl-10" to="/product">
+            <Button className={styles.buttonBack}>商品一覧</Button>
+          </Link>
         </Card.Footer>
       </div>
     </div>
