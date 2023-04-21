@@ -8,15 +8,37 @@ import { Field, reduxForm, getFormValues, initialize } from "redux-form";
 import { SET_ADD, addUser } from "../reducers/actions";
 import { withRouter } from "react-router-dom";
 
-const renderField = (field) => {
-  const {
-    input,
-    label,
-    type,
-    id,
-    meta: { touched, error },
-  } = field;
+const validate = (values) => {
+  const errors = {};
+  if (!values.name) {
+    errors.name = "名前を入力してください";
+  } else if (values.name.length < 1) {
+    errors.name = "名前を入力してください";
+  }
+  if (!values.email) {
+    errors.email = "メールアドレスを入力してください";
+  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    errors.email = "メールアドレスを入力してください";
+  }
+  if (!values.password) {
+    errors.password = "パスワードを入力してください";
+  } else if (values.password.length < 1) {
+    errors.password = "パスワードを入力してください";
+  }
+  return errors;
+};
 
+const renderField = ({
+  input,
+  label,
+  type,
+  id,
+  meta: { touched, error },
+  submitFailed,
+}) => {
+  const showError = (touched || submitFailed) && error;
+
+  console.log(showError);
   return (
     <div>
       <label
@@ -32,22 +54,28 @@ const renderField = (field) => {
         type={type}
         className="bg-gray-100 border border-gray-200 rounded py-1 px-3 block focus:ring-blue-500 focus:border-blue-500 text-gray-800 w-full mb-3"
       />
-      {touched && error && <span className="text-red-500">{error}</span>}
+      {showError && <span className="text-red-500">{error}</span>}
     </div>
   );
 };
 
 const New = (props) => {
   const formValue = useSelector((state) => state?.form?.newForm?.values);
-  const state = useSelector((state) => state);
+  const newFormError = useSelector((state) => state?.form?.newForm);
   const dispatch = useDispatch();
-  const NewWithRouter = withRouter(New);
+
+  const { handleSubmit, submitFailed, pristine, invalid } = props;
+
+  const onSubmit = (formValues) => {
+    dispatch(addUser(formValues));
+    props.history.push("/new_confrim");
+  };
 
   const restForm = () => {
     dispatch(initialize("newForm", {}));
   };
 
-  console.log(state);
+  console.log(newFormError);
 
   return (
     <>
@@ -56,7 +84,10 @@ const New = (props) => {
           新規登録
         </h1>
         <div className="border w-2/4 m-auto smax:mt-10 smax:w-11/12">
-          <Form className="w-2/5 m-auto smax:w-80">
+          <Form
+            className="w-2/5 m-auto smax:w-80"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <Form.Group controlId="formBasicEmail">
               <Field
                 label="名前"
@@ -65,6 +96,7 @@ const New = (props) => {
                 type="text"
                 value={formValue?.name}
                 component={renderField}
+                submitFailed={submitFailed}
               />
               <Field
                 name="email"
@@ -74,6 +106,7 @@ const New = (props) => {
                 placeholder="about@about.com"
                 value={formValue?.email}
                 component={renderField}
+                submitFailed={submitFailed}
               />
               <Field
                 label="パスワード"
@@ -82,6 +115,7 @@ const New = (props) => {
                 id="password"
                 value={formValue?.password}
                 component={renderField}
+                submitFailed={submitFailed}
               />
             </Form.Group>
 
@@ -90,24 +124,18 @@ const New = (props) => {
                 戻る
               </Button>
             </Link>
-            <Link to={{ pathname: "/new_confrim", state: { formValue } }}>
-              <Button
-                className={styles.button}
-                onClick={() => dispatch(addUser(formValue))}
-              >
-                確認画面へ
-              </Button>
-            </Link>
+            <Button
+              type="submit"
+              className={styles.button}
+              disabled={pristine || invalid}
+            >
+              確認画面へ
+            </Button>
           </Form>
         </div>
       </div>
     </>
   );
-};
-
-const validate = (values) => {
-  const errors = {};
-  return errors;
 };
 
 export default reduxForm({
