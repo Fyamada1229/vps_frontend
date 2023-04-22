@@ -120,7 +120,11 @@ const New = (props) => {
             </Form.Group>
 
             <Link className="pr-10" to="/">
-              <Button className={styles.buttonBack} onClick={restForm}>
+              <Button
+                className={styles.buttonBack}
+                variant="secondary"
+                onClick={restForm}
+              >
                 戻る
               </Button>
             </Link>

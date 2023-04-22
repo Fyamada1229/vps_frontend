@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styles from "../styles.module.css";
 import { loginUser } from "../reducers/usersReducer";
+import { useHistory } from "react-router-dom";
 
 const validate = (values) => {
   const errors = {};
@@ -52,12 +53,17 @@ const renderField = ({
   );
 };
 
-const onPost = (data) => {
-  loginUser(data);
-};
-
 const Login = (props) => {
   const { handleSubmit, submitFailed } = props;
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const onPost = async (data) => {
+    const loggedIn = await dispatch(loginUser(data));
+    if (loggedIn) {
+      history.push("/home");
+    }
+  };
 
   return (
     <>
@@ -88,7 +94,9 @@ const Login = (props) => {
               />
             </Form.Group>
             <Link className="pr-10" to="/">
-              <Button className={styles.buttonBack}>戻る</Button>
+              <Button className={styles.buttonBack} variant="secondary">
+                戻る
+              </Button>
             </Link>
             <Button type="submit" className={styles.button}>
               ログイン
