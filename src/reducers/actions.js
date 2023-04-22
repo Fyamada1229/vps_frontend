@@ -3,6 +3,7 @@ export const SET_ADD = "SET_ADD";
 export const REGISTER_USER = "REGISTER_USER";
 export const GET_DATA = "GET_DATA";
 export const GET_PRODUCT = "GET_PRODUCT";
+export const SET_AUTHENTICATED_USER = "SET_AUTHENTICATED_USER";
 
 // Action creators
 export const addUser = (data) => {

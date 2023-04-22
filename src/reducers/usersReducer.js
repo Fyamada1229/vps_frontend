@@ -1,5 +1,10 @@
 import axios from "axios";
-import { SET_ADD, REGISTER_USER, GET_DATA } from "./actions";
+import {
+  SET_ADD,
+  REGISTER_USER,
+  GET_DATA,
+  SET_AUTHENTICATED_USER,
+} from "./actions";
 import setAuthToken from "../setAuthToken";
 
 const initialState = {};
@@ -24,6 +29,11 @@ export const registerUserSuccess = (user) => ({
   payload: user,
 });
 
+export const setAuthenticatedUser = (user) => ({
+  type: SET_AUTHENTICATED_USER,
+  payload: user,
+});
+
 export const registerUser = (data) => {
   return async (dispatch) => {
     try {
@@ -33,6 +43,7 @@ export const registerUser = (data) => {
       );
       const newUser = response.data;
       dispatch(registerUserSuccess(newUser));
+      dispatch(loginUser(data));
     } catch (error) {
       console.error("登録処理ができません:", error);
     }
@@ -40,19 +51,21 @@ export const registerUser = (data) => {
 };
 
 export const loginUser = (data) => {
-  return axios
-    .post("http://localhost:80/api/login", data)
-    .then((response) => {
-      console.log(response.data);
+  return async (dispatch) => {
+    try {
+      const response = await axios.post("http://localhost:80/api/login", data);
       const token = response.data.token;
 
       // トークンを設定
       setAuthToken(token);
-
       localStorage.setItem("token", token);
-      window.location.href = "/home";
-    })
-    .catch((error) => {
+
+      // ユーザー情報を取得し、ストアに保存
+      const user = response.data.user;
+      dispatch(setAuthenticatedUser(user));
+
+      return true;
+    } catch (error) {
       if (error.response && error.response.status === 401) {
         const redirectUrl = error.response.data.redirect_url;
         if (redirectUrl) {
@@ -61,7 +74,9 @@ export const loginUser = (data) => {
       } else {
         console.error("Error occurred:", error);
       }
-    });
+      return false;
+    }
+  };
 };
 
 export const getData = () => {

@@ -6,7 +6,7 @@ import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { connect, useSelector, useDispatch } from "react-redux";
 import { Field, reduxForm, initialize, formValues } from "redux-form";
-import { registerUser } from "../reducers/usersReducer";
+import { registerUser, loginUser } from "../reducers/usersReducer";
 import { useHistory } from "react-router-dom";
 
 const NewConfrim = (props) => {
@@ -20,11 +20,14 @@ const NewConfrim = (props) => {
   const user = Object.entries(userReducer);
   const data = user?.map((data) => data[1]);
 
-  const onPost = (event) => {
+  const onPost = async (event) => {
     event.preventDefault();
-    dispatch(registerUser(data[0])).then(() => {
-      reset();
-      history.push("/home");
+    await dispatch(registerUser(data[0])).then(async () => {
+      const loggedIn = await dispatch(loginUser(data[0]));
+      if (loggedIn) {
+        reset();
+        history.push("/home");
+      }
     });
   };
 
