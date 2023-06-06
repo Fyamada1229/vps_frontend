@@ -50,9 +50,7 @@ const NewConfrim = (props) => {
     <>
       {loading ? (
         <div className="d-flex justify-content-center align-items-center h-100">
-          <Spinner animation="border" role="status" className="mt-32">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
+          <Spinner animation="border" role="status" className="mt-32"></Spinner>
         </div>
       ) : (
         <Container>
