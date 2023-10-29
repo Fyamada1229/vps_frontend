@@ -5,6 +5,5 @@ import { reducer as reduxFormReducer } from "redux-form";
 
 export default combineReducers({
   usersReducer,
-  productReducer,
   form: reduxFormReducer,
 });

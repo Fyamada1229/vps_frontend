@@ -3,7 +3,18 @@ import {
   SET_ADD,
   REGISTER_USER,
   GET_DATA,
-  SET_AUTHENTICATED_USER,
+  POST_EMPLOYEE_ATTENDANCE,
+  POST_DEPARTURE,
+  RESET_STORE,
+  UPDATE_STATE,
+  DEPARTURE_UPDATE_STATE,
+  UPDATE_EMPLOYEE_ATTENDANCE,
+  registerUserSuccess,
+  setAuthenticatedUser,
+  postEmployeeAttendance,
+  updateEmployeeAttendance,
+  postDeparture,
+  updateState,
 } from "./actions";
 import setAuthToken from "../setAuthToken";
 
@@ -18,21 +29,22 @@ const usersReducer = (state = initialState, action) => {
       return { ...state, user: action.payload };
     case GET_DATA:
       return { ...state, user: action.payload };
+    case POST_EMPLOYEE_ATTENDANCE:
+      return { ...state, employee_attendances: action.payload };
+    // case UPDATE_EMPLOYEE_ATTENDANCE:
+    //   return { ...state, employee_attendances: action.payload };
+    case POST_DEPARTURE:
+      return { ...state, departure: action.payload };
+    case DEPARTURE_UPDATE_STATE:
+      return { ...state, departure: action.payload };
+    case RESET_STORE:
+      return initialState;
+    case UPDATE_STATE:
+      return { ...state, employee_attendances: action.payload };
     default:
       return state;
   }
 };
-
-// Action creators
-export const registerUserSuccess = (user) => ({
-  type: REGISTER_USER,
-  payload: user,
-});
-
-export const setAuthenticatedUser = (user) => ({
-  type: SET_AUTHENTICATED_USER,
-  payload: user,
-});
 
 export const registerUser = (data) => {
   return async (dispatch) => {
@@ -54,6 +66,8 @@ export const loginUser = (data) => {
   return async (dispatch) => {
     try {
       const response = await axios.post("http://localhost:80/api/login", data);
+
+      console.log(response);
       const token = response.data.token;
 
       // トークンを設定
@@ -70,29 +84,12 @@ export const loginUser = (data) => {
         const redirectUrl = error.response.data.redirect_url;
         if (redirectUrl) {
           window.location.href = redirectUrl;
+          console.log("test");
         }
       } else {
-        console.error("Error occurred:", error);
+        return false;
       }
-      return false;
     }
-  };
-};
-
-export const getData = () => {
-  return (dispatch) => {
-    fetch("http://localhost:80/api/users", {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        dispatch({
-          type: GET_DATA,
-          payload: data,
-        });
-      });
   };
 };
 
@@ -111,6 +108,176 @@ export const logOut = (data) => {
     .catch((error) => {
       console.log("logOutでエラーがあります");
     });
+};
+
+export const getUser = () => {
+  return (dispatch) => {
+    fetch("http://localhost:80/api/current-user", {
+      // URLを /api/users から /api/me に変更
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        dispatch({
+          type: GET_DATA,
+          payload: data,
+        });
+      })
+      .catch((error) => {
+        console.log("Fetch error:", error); // エラー処理を追加
+      });
+  };
+};
+
+export const getUsersData = () => {
+  return (dispatch) => {
+    fetch("http://localhost:80/api/users", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({
+          type: GET_DATA,
+          payload: data,
+        });
+      });
+  };
+};
+
+export const employeeAttendancePost = (data) => {
+  return async (dispatch) => {
+    try {
+      // 認証トークンを含むヘッダーを設定
+      const config = {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      };
+
+      // ヘッダーを追加してPOSTリクエストを送る
+      const response = await axios.post(
+        "http://localhost:80/api/users/employee_attendance",
+        data,
+        config
+      );
+
+      const post = response.data;
+      dispatch(postEmployeeAttendance(post));
+    } catch (error) {
+      console.error("登録処理ができません:", error);
+    }
+  };
+};
+
+export const departureUpdate = (data) => {
+  return async (dispatch) => {
+    try {
+      // 認証トークンを含むヘッダーを設定
+      const config = {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      };
+      // ヘッダーを追加してPOSTリクエストを送る
+      const response = await axios.post(
+        "http://localhost:80/api/users/departure/update",
+        data,
+        config
+      );
+
+      const post = response;
+
+      console.log(post);
+      dispatch(updateEmployeeAttendance(post));
+    } catch (error) {
+      console.error("登録処理ができません:", error);
+    }
+  };
+};
+
+export const departurePost = (data) => {
+  return async (dispatch) => {
+    console.log(data);
+    try {
+      // 認証トークンを含むヘッダーを設定
+      const config = {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      };
+
+      // ヘッダーを追加してPOSTリクエストを送る
+      const response = await axios.post(
+        "http://localhost:80/api/users/departure",
+        data,
+        config
+      );
+
+      const post = response.data;
+      dispatch(postDeparture(post));
+    } catch (error) {
+      console.error("登録処理ができません:", error);
+    }
+  };
+};
+
+export const employeeAttendanceData = () => {
+  return (dispatch) => {
+    fetch("http://localhost:80/api/get_employee_attendance", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        dispatch({
+          type: UPDATE_STATE,
+          payload: data,
+        });
+      })
+      .catch((error) => {
+        console.log("Fetch error:", error);
+      });
+  };
+};
+
+export const departureUpdateState = () => {
+  return (dispatch) => {
+    fetch("http://localhost:80/api/get_departure", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        dispatch({
+          type: DEPARTURE_UPDATE_STATE,
+          payload: data,
+        });
+      })
+      .catch((error) => {
+        console.log("Fetch error:", error);
+      });
+  };
 };
 
 export default usersReducer;

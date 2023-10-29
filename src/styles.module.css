@@ -20,3 +20,27 @@
 #content {
   @apply z-10 w-1/3  p-4 bg-slate-100 smax:w-auto smax:h-28;
 }
+
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* 画面幅が1650px以上になった場合のスタイリング */
+@media (min-width: 1650px) {
+  .center-content {
+    padding-right: 110px; /* 例: 右側のパディングを0に設定 */
+  }
+  .center-font {
+    margin-right: 100px; /* 例: 右側のパディングを0に設定 */
+  }
+}
+
+/* 言語変更の背景色 */
+.dropdown-toggle {
+  background-color: white;
+  color: black;
+  margin-right: 20px;
+}

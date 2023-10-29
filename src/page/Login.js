@@ -10,14 +10,14 @@ import { useHistory } from "react-router-dom";
 const validate = (values) => {
   const errors = {};
   if (!values.email) {
-    errors.email = "メールアドレスを入力してください";
+    errors.email = "メールアドレスを入力してください。";
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = "メールアドレスを入力してください";
+    errors.email = "メールアドレスを入力してください。";
   }
   if (!values.password) {
-    errors.password = "パスワードを入力してください";
+    errors.password = "パスワードを入力してください。";
   } else if (values.password.length < 1) {
-    errors.password = "パスワードを入力してください";
+    errors.password = "パスワードを入力してください。";
   }
   return errors;
 };
@@ -58,12 +58,27 @@ const Login = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  // 新しいstateを追加
+  const [errorMessage, setErrorMessage] = useState("");
+
   const onPost = async (data) => {
     const loggedIn = await dispatch(loginUser(data));
+
+    // メールアドレスとパスワードが入力されているかチェック
+    if (!data.email || !data.password) {
+      setErrorMessage("メールアドレスとパスワードを両方入力してください。");
+      return;
+    }
+
     if (loggedIn) {
       history.push("/home");
+    } else {
+      // ログイン失敗時にエラーメッセージを設定
+      setErrorMessage("パスワードかメールアドレスが違います。");
     }
   };
+
+  console.log(errorMessage);
 
   return (
     <>
@@ -71,6 +86,11 @@ const Login = (props) => {
         <h1 className="lg:w-1/5 lg:m-auto pt-10 pb-10 smax:w-10/12 smax:m-auto smax:pt-5 ">
           ログイン
         </h1>
+        {errorMessage && (
+          <div className="text-red-500 pb-1 flex justify-center items-center">
+            {errorMessage}
+          </div>
+        )}
         <div className="border w-2/4 m-auto smax:mt-10 smax:w-11/12">
           <Form
             className="w-2/5 m-auto smax:w-80 pt-3"

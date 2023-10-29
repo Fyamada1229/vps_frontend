@@ -62,39 +62,69 @@ const NewConfrim = (props) => {
                     アカウント確認
                   </Card.Title>
                   <Form onSubmit={onPost}>
-                    <Form.Group controlId="formBasicName">
-                      <Form.Label>名前</Form.Label>
-                      <Form.Control
-                        plaintext
-                        readOnly
-                        value={data[0]?.name}
-                        className="font-weight-bold"
-                        style={{ fontSize: "18px" }}
-                      />
+                    <Form.Group controlId="formBasicName" className="mb-4">
+                      <Row>
+                        <Col xs={4}>
+                          <Form.Label>名前</Form.Label>
+                        </Col>
+                        <Col xs={8} className="">
+                          <Form.Control
+                            plaintext
+                            readOnly
+                            className="p-0"
+                            value={data[0]?.name}
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              color: "#333",
+                            }}
+                          />
+                        </Col>
+                      </Row>
                       <Field name="name" component="input" type="hidden" />
                     </Form.Group>
 
-                    <Form.Group controlId="formBasicEmail">
-                      <Form.Label>メールアドレス</Form.Label>
-                      <Form.Control
-                        plaintext
-                        readOnly
-                        value={data[0]?.email}
-                        className="font-weight-bold"
-                        style={{ fontSize: "18px" }}
-                      />
+                    <Form.Group controlId="formBasicEmail" className="mb-4">
+                      <Row>
+                        <Col xs={4}>
+                          <Form.Label>メールアドレス</Form.Label>
+                        </Col>
+                        <Col xs={8}>
+                          <Form.Control
+                            plaintext
+                            readOnly
+                            value={data[0]?.email}
+                            className="p-0"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              color: "#333",
+                            }}
+                          />
+                        </Col>
+                      </Row>
                       <Field name="email" component="input" type="hidden" />
                     </Form.Group>
 
-                    <Form.Group controlId="formBasicPassword">
-                      <Form.Label>パスワード</Form.Label>
-                      <Form.Control
-                        plaintext
-                        readOnly
-                        value={data[0]?.password}
-                        className="font-weight-bold"
-                        style={{ fontSize: "18px" }}
-                      />
+                    <Form.Group controlId="formBasicPassword" className="mb-4">
+                      <Row>
+                        <Col xs={4}>
+                          <Form.Label>パスワード</Form.Label>
+                        </Col>
+                        <Col xs={8}>
+                          <Form.Control
+                            plaintext
+                            readOnly
+                            value={data[0]?.password}
+                            className="p-0"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              color: "#333",
+                            }}
+                          />
+                        </Col>
+                      </Row>
                       <Field name="password" component="input" type="hidden" />
                     </Form.Group>
 

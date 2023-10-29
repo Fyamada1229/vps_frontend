@@ -21,9 +21,9 @@ const validate = (values) => {
     errors.email = "メールアドレスを入力してください";
   }
   if (!values.password) {
-    errors.password = "パスワードを入力してください";
-  } else if (values.password.length < 1) {
-    errors.password = "パスワードを入力してください";
+    errors.password = "パスワードの入力してください";
+  } else if (values.password.length < 5) {
+    errors.password = "5文字以上入力してください";
   }
   return errors;
 };

@@ -5,8 +5,11 @@ module.exports = {
   theme: {
     extend: {},
     screens: {
-      "2xlmax": { max: "2550px" },
+      x3lmax: { max: "2550px" },
       // => @media (max-width: 1535px) { ... }
+
+      x2lmax: { max: "1650px" },
+      // => @media (max-width: 1279px) { ... }
 
       xlmax: { max: "1279px" },
       // => @media (max-width: 1279px) { ... }
