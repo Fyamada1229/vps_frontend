@@ -11,7 +11,7 @@ const Modal = ({ isOpen, onClose }) => {
         <button onClick={onClose} className="absolute top-2 right-2">
           ×
         </button>
-        <h2 className="mb-4">コメントを送信しました</h2>
+        <h2 className="mb-4">コメントを送信しました。</h2>
         <button
           onClick={onClose}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"

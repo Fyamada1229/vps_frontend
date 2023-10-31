@@ -8,6 +8,8 @@ import New from "./page/New";
 import NewConfrim from "./page/NewConfrim";
 import Product from "./page/Product";
 import Admin from "./page/Admin";
+import AdminNew from "./page/AdminNew";
+import AdminEdit from "./page/AdminEdit";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { createStore, applyMiddleware, compose } from "redux";
@@ -57,6 +59,8 @@ root.render(
           />
           <PrivateRoute path="/home" component={Home} />
           <PrivateRoute path="/Admin" component={Admin} />
+          <PrivateRoute path="/Admin_new" component={AdminNew} />
+          <PrivateRoute path="/Admin_edit/:id" component={AdminEdit} />
         </Switch>
       </BrowserRouter>
     </PersistGate>
