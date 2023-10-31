@@ -26,13 +26,12 @@ const Home = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.usersReducer?.user?.user);
+  const [comment, setComment] = useState("");
   const comments = useSelector(
-    (state) => state?.form?.homeForm?.values?.comments
+    (state) => state?.form?.homeForm?.values?.comment
   );
   const { t, i18n } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
-
-  console.log(comments);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -53,10 +52,11 @@ const Home = (props) => {
   useEffect(() => {
     // 初回マウント時に関数を実行
     dispatch(employeeAttendanceData());
+    dispatch(departureUpdateState());
 
     const now = new Date();
     const targetTime = new Date(now);
-    targetTime.setHours(0, 0, 0, 30);
+    targetTime.setHours(0, 0, 0, 20);
 
     if (now > targetTime) {
       targetTime.setDate(targetTime.getDate() + 1);
@@ -67,6 +67,7 @@ const Home = (props) => {
     // 指定した時間になったら関数を再度実行するタイマーを設定
     const timerId = setTimeout(() => {
       dispatch(employeeAttendanceData());
+      dispatch(departureUpdateState());
     }, msUntilTarget);
 
     // クリーンアップ
@@ -97,20 +98,19 @@ const Home = (props) => {
 
     const is_attendance = "1";
     const next_reset_time = "1";
-    const comment = "";
 
     user.attendance_time = formatted_attendance_time;
     user.is_attendance = is_attendance;
     user.next_reset_time = next_reset_time;
-    user.comment = comment;
+    user.comment = comments;
 
     const data = user;
 
     console.log(data);
 
     dispatch(employeeAttendancePost(data));
-    // フォームをリセット
-    user.comment = "";
+    props.reset(); //コメント初期化
+
     alert("出勤しました！");
   };
 
@@ -134,21 +134,16 @@ const Home = (props) => {
 
     const is_departure = "1";
     const next_reset_time = "1";
-    const comment = ""; // 'comments' を 'comment' に修正しました。
 
     user.departure_time = formatted_departure_time;
     user.is_departure = is_departure;
     user.next_reset_time = next_reset_time;
-    user.comment = comment; // 'comments' を 'comment' に修正しました。
+    user.comment = comments;
 
     const data = user;
 
-    console.log(data);
-
     dispatch(departurePost(data));
-
-    values.comment = "";
-    setComment(values.comment);
+    props.reset(); //コメント初期化
 
     alert("退勤しました！");
   };
@@ -166,24 +161,27 @@ const Home = (props) => {
   console.log(isDeparture);
   console.log(isAttendance);
 
-  const test = useSelector((state) => state);
-  console.log(test);
-
-  const [comment, setComment] = useState("");
   // IDを渡す作業をする
   const onSubmit = (values) => {
-    const id = user?.id;
-    values.id = id;
     console.log(values);
-    dispatch(departureUpdate(values));
-    // フォームをリセット
-    values.comment = "";
-    setComment(values.comment);
+    if (values?.comment) {
+      const id = user?.id;
+      values.id = id;
+      console.log(values);
+      dispatch(departureUpdate(values));
+      // フォームをリセット
+      values.comment = "";
+      setComment(values.comment);
+    } else {
+      alert("コメントに入力がないです。");
+    }
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
-    setIsModalOpen(true);
+    if (comments) {
+      setIsModalOpen(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -248,7 +246,7 @@ const Home = (props) => {
                   border: "none",
                 }}
               >
-                ダッシュボード
+                マイ ページ
               </a>
               <a
                 href="#"
@@ -259,18 +257,7 @@ const Home = (props) => {
                   border: "none",
                 }}
               >
-                プロフィール
-              </a>
-              <a
-                href="#"
-                className="list-group-item list-group-item-action"
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: "#f0f0f0",
-                  border: "none",
-                }}
-              >
-                設定
+                出勤日確認
               </a>
               <Link
                 className="list-group-item list-group-item-action"
