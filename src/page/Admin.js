@@ -157,17 +157,6 @@ const Admin = (props) => {
                 スタッフ新規登録
               </Link>
               <Link
-                className="list-group-item list-group-item-action"
-                to="/Admin_edit"
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: "#f0f0f0",
-                  border: "none",
-                }}
-              >
-                スタッフ編集
-              </Link>
-              <Link
                 to="/Admin"
                 className="list-group-item list-group-item-action"
                 style={{
