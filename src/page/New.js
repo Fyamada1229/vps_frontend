@@ -63,7 +63,6 @@ const New = (props) => {
   const formValue = useSelector((state) => state?.form?.newForm?.values);
   const newFormError = useSelector((state) => state?.form?.newForm);
   const dispatch = useDispatch();
-
   const { handleSubmit, submitFailed, pristine, invalid } = props;
 
   const onSubmit = (formValues) => {

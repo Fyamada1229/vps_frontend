@@ -261,7 +261,7 @@ const Home = (props) => {
               </a>
               <Link
                 className="list-group-item list-group-item-action"
-                to="/Admin"
+                to="/admin"
                 style={{
                   marginBottom: "10px",
                   backgroundColor: "#f0f0f0",

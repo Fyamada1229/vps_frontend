@@ -10,7 +10,10 @@ import Product from "./page/Product";
 import Admin from "./page/Admin";
 import AdminNew from "./page/AdminNew";
 import AdminEdit from "./page/AdminEdit";
+import AdminEditConfrim from "./page/AdminNewConfrim";
 import reportWebVitals from "./reportWebVitals";
+import AdminStaffAttendance from "./page/AdminStaffAttendance";
+import AdminStaffAttendanceShow from "./page/AdminStaffAttendanceShow";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
@@ -58,9 +61,21 @@ root.render(
             isPublic
           />
           <PrivateRoute path="/home" component={Home} />
-          <PrivateRoute path="/Admin" component={Admin} />
-          <PrivateRoute path="/Admin_new" component={AdminNew} />
-          <PrivateRoute path="/Admin_edit/:id" component={AdminEdit} />
+          <PrivateRoute path="/admin" component={Admin} />
+          <PrivateRoute path="/admin_new" component={AdminNew} />
+          <PrivateRoute
+            path="/adimn_new_confrim"
+            component={AdminEditConfrim}
+          />
+          <PrivateRoute
+            path="/admin_staff_attendance"
+            component={AdminStaffAttendance}
+          />
+          <PrivateRoute
+            path="/admin_staff_attendance_show/:id"
+            component={AdminStaffAttendanceShow}
+          />
+          <PrivateRoute path="/admin_edit/:id" component={AdminEdit} />
         </Switch>
       </BrowserRouter>
     </PersistGate>

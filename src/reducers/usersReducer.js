@@ -9,6 +9,7 @@ import {
   UPDATE_STATE,
   DEPARTURE_UPDATE_STATE,
   UPDATE_EMPLOYEE_ATTENDANCE,
+  EMPLOYEE_ATTENDANCE_USER_SERACH,
   registerUserSuccess,
   setAuthenticatedUser,
   postEmployeeAttendance,
@@ -31,14 +32,14 @@ const usersReducer = (state = initialState, action) => {
       return { ...state, user: action.payload };
     case POST_EMPLOYEE_ATTENDANCE:
       return { ...state, employee_attendances: action.payload };
-    // case UPDATE_EMPLOYEE_ATTENDANCE:
-    //   return { ...state, employee_attendances: action.payload };
+    case EMPLOYEE_ATTENDANCE_USER_SERACH:
+      return { ...state, employee_attendances_user: action.payload };
+    case RESET_STORE:
+      return initialState;
     case POST_DEPARTURE:
       return { ...state, departure: action.payload };
     case DEPARTURE_UPDATE_STATE:
       return { ...state, departure: action.payload };
-    case RESET_STORE:
-      return initialState;
     case UPDATE_STATE:
       return { ...state, employee_attendances: action.payload };
     default:
@@ -153,6 +154,31 @@ export const getUsersData = () => {
   };
 };
 
+export const usersEditPost = (data) => {
+  return async (dispatch) => {
+    try {
+      // 認証トークンを含むヘッダーを設定
+      const config = {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      };
+
+      // ヘッダーを追加してPOSTリクエストを送る
+      const response = await axios.post(
+        "http://localhost:80/api/users/edit",
+        data,
+        config
+      );
+
+      const post = response.data;
+      dispatch(postEmployeeAttendance(post));
+    } catch (error) {
+      console.error("登録処理ができません:", error);
+    }
+  };
+};
+
 export const employeeAttendancePost = (data) => {
   return async (dispatch) => {
     try {
@@ -246,6 +272,34 @@ export const employeeAttendanceData = () => {
       .then((data) => {
         dispatch({
           type: UPDATE_STATE,
+          payload: data,
+        });
+      })
+      .catch((error) => {
+        console.log("Fetch error:", error);
+      });
+  };
+};
+
+export const employeeAttendanceUserSerach = (id) => {
+  console.log(id);
+  return (dispatch) => {
+    const url = new URL("http://localhost:80/api/get_employee_attendance_user");
+    url.searchParams.append("id", id);
+    fetch(url, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        dispatch({
+          type: EMPLOYEE_ATTENDANCE_USER_SERACH,
           payload: data,
         });
       })

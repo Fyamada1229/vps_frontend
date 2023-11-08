@@ -74,11 +74,13 @@ const AdminNew = (props) => {
 
   const onSubmit = (formValues) => {
     dispatch(addUser(formValues));
-    props.history.push("/new_confrim");
+    props.history.push("/adimn_new_confrim");
   };
 
+  // 登録した後に再度、新規登録をすると以前の入力したデータが残っている
   const restForm = () => {
-    dispatch(initialize("newForm", {}));
+    dispatch(initialize("adimNewForm", {}));
+    props.reset();
   };
 
   console.log(newFormError);
@@ -151,7 +153,7 @@ const AdminNew = (props) => {
               />
             </Form.Group>
 
-            <Link className="pr-10" to="/Admin">
+            <Link className="pr-10" to="/admin">
               <Button
                 className={styles.buttonBack}
                 variant="secondary"
@@ -176,4 +178,5 @@ const AdminNew = (props) => {
 
 export default reduxForm({
   form: "adimNewForm",
+  destroyOnUnmount: false,
 })(AdminNew);

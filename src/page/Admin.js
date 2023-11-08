@@ -134,19 +134,19 @@ const Admin = (props) => {
                 paddingLeft: "15px",
               }}
             >
-              <a
-                href="#"
+              <Link
                 className="list-group-item list-group-item-action"
+                to="/home"
                 style={{
                   marginBottom: "10px",
                   backgroundColor: "#f0f0f0",
                   border: "none",
                 }}
               >
-                ダッシュボード
-              </a>
+                ホーム
+              </Link>
               <Link
-                to="Admin_new"
+                to="admin_new"
                 className="list-group-item list-group-item-action"
                 style={{
                   marginBottom: "10px",
@@ -157,7 +157,7 @@ const Admin = (props) => {
                 スタッフ新規登録
               </Link>
               <Link
-                to="/Admin"
+                to="/admin_staff_attendance"
                 className="list-group-item list-group-item-action"
                 style={{
                   marginBottom: "10px",
@@ -165,18 +165,7 @@ const Admin = (props) => {
                   border: "none",
                 }}
               >
-                スタッフ出勤日確認
-              </Link>
-              <Link
-                className="list-group-item list-group-item-action"
-                to="/home"
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: "#f0f0f0",
-                  border: "none",
-                }}
-              >
-                Home
+                スタッフ出勤簿
               </Link>
               <Button
                 className="list-group-item list-group-item-action"
@@ -215,7 +204,7 @@ const Admin = (props) => {
                             <td>{data.email}</td>
                             <td>{data.created_at.split("T")[0]}</td>
                             <td>
-                              <Link to={`/Admin_Edit/${data.id}`}>編集</Link>
+                              <Link to={`/admin_Edit/${data.id}`}>編集</Link>
                             </td>
                           </tr>
                         ))}
