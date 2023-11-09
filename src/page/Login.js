@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Card } from "react-bootstrap";
 import { Field, reduxForm } from "redux-form";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -82,6 +82,12 @@ const Login = (props) => {
 
   return (
     <>
+      <Card.Header
+        className="bg-primary text-white d-flex justify-content-between align-items-center"
+        style={{ height: "60px", paddingRight: "0" }}
+      >
+        <h4 className="m-2 pl-5">ジェン カンリ</h4>
+      </Card.Header>
       <div>
         <h1 className="lg:w-1/5 lg:m-auto pt-10 pb-10 smax:w-10/12 smax:m-auto smax:pt-5 ">
           ログイン

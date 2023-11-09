@@ -12,9 +12,11 @@ import { useParams } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import CalendarControls from "../components/CalendarControls";
+import { useHistory } from "react-router-dom";
 
 const AdminStaffAttendanceShow = (props) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const { t, i18n } = useTranslation();
   const user = useSelector((state) => state?.usersReducer?.user?.users);
   const changeLanguage = (lng) => {
@@ -142,6 +144,13 @@ const AdminStaffAttendanceShow = (props) => {
       .replace("/", "-")
       .slice(0, -2)
   );
+
+  // ページ遷移と同時にトップにスクロールする関数
+  const handleGoBack = () => {
+    // ページのトップにスクロールする
+    window.scrollTo(0, 0);
+    history.push("/admin_staff_attendance");
+  };
 
   return (
     <>
@@ -292,6 +301,12 @@ const AdminStaffAttendanceShow = (props) => {
                   >
                     戻る
                   </Link>
+                  {/* <button
+                    onClick={handleGoBack}
+                    className="h-14 block w-full mt-4 pt-3 bg-blue-600 text-white rounded-lg hover:bg-blue-400 text-center no-underline"
+                  >
+                    戻る
+                  </button> */}
                 </div>
               </div>
             </div>

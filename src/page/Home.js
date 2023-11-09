@@ -188,22 +188,42 @@ const Home = (props) => {
     setIsModalOpen(false);
   };
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <div
-      className="container-fluid p-0"
-      style={{ height: "100vh", maxWidth: "1800px", margin: "0 auto" }}
-    >
-      <div className="row no-gutters" style={{ height: "100%" }}>
+    <div className="container-fluid p-0">
+      <div className="row no-gutters">
         {/* Main Content */}
         <div
           className="col-md-12 d-flex flex-column p-0"
-          style={{ height: "100%" }}
+          style={{ height: "100%", maxWidth: "1800px", margin: "0 auto" }}
         >
           <Card.Header
             className="bg-primary text-white d-flex justify-content-between align-items-center"
             style={{ height: "60px", paddingRight: "0" }}
           >
-            <h4 className="m-2 pl-5">ジェン カンリ</h4>
+            {/* PC画面 */}
+            <h4 className="smax:hidden m-2 pl-5">ジェン カンリ</h4>
+            {/* スマートフォン画面 */}
+            <div className="sm:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-white focus:outline-none bg-blue-500 rounded-full p-2 ml-4 mt-1"
+              >
+                <svg
+                  className="w-8 h-8"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+            {/* */}
             <Dropdown>
               <Dropdown.Toggle
                 id="dropdown-basic"
@@ -227,49 +247,106 @@ const Home = (props) => {
 
           {/* Sidebar and Content */}
           <div className="d-flex flex-grow-1">
-            {/* Sidebar */}
-            <div
-              className="list-group pt-2"
-              style={{
-                minWidth: "230px",
-                backgroundColor: "#f0f0f0",
-                height: "calc(100vh - 60px)",
-                paddingLeft: "15px",
-              }}
-            >
-              <Link
-                className="list-group-item list-group-item-action"
-                to="user_show"
+            {/* SidebarPC画面用 */}
+            <div className="smax:hidden">
+              <div
+                className="list-group pt-2"
                 style={{
-                  marginBottom: "10px",
+                  minWidth: "230px",
                   backgroundColor: "#f0f0f0",
-                  border: "none",
+                  height: "calc(100vh - 60px)",
+                  paddingLeft: "15px",
                 }}
               >
-                出勤簿
-              </Link>
-              <Link
-                className="list-group-item list-group-item-action"
-                to="/admin"
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: "#f0f0f0",
-                  border: "none",
-                }}
+                <Link
+                  className="list-group-item list-group-item-action"
+                  to="user_show"
+                  style={{
+                    marginBottom: "10px",
+                    backgroundColor: "#f0f0f0",
+                    border: "none",
+                  }}
+                >
+                  出勤簿
+                </Link>
+                <Link
+                  className="list-group-item list-group-item-action"
+                  to="/admin"
+                  style={{
+                    marginBottom: "10px",
+                    backgroundColor: "#f0f0f0",
+                    border: "none",
+                  }}
+                >
+                  管理者画面
+                </Link>
+                <Button
+                  className="list-group-item list-group-item-action"
+                  style={{
+                    marginBottom: "10px",
+                    backgroundColor: "#f0f0f0",
+                    border: "none",
+                  }}
+                  onClick={onLogout}
+                >
+                  ログアウト
+                </Button>
+              </div>
+            </div>
+
+            {/* メニューコンテンツ Sidebarスマートフォン */}
+            <div className="flex flex-col items-center justify-center h-screen">
+              {/* このdivはメニュー全体を覆う背景となります */}
+              <div
+                className={`fixed inset-0 bg-blue-500 transform ${
+                  isMenuOpen ? "translate-x-0" : "-translate-x-full"
+                } transition-transform duration-300 ease-in-out`}
               >
-                管理者画面
-              </Link>
-              <Button
-                className="list-group-item list-group-item-action"
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: "#f0f0f0",
-                  border: "none",
-                }}
-                onClick={onLogout}
-              >
-                ログアウト
-              </Button>
+                {/* メニューコンテンツ */}
+                <div className="p-5 text-white">
+                  <h1 className="text-2xl font-bold mb-4">ジェン カンリ</h1>
+                  {/* メニューアイテムのリスト */}
+                  <div className="space-y-4">
+                    <Link
+                      to="user_show"
+                      className="flex items-center space-x-2 text-white no-underline"
+                    >
+                      <div className="bg-yellow-500 h-1 w-8"></div>
+                      <span className="text-lg">出勤簿</span>
+                    </Link>
+                    <Link
+                      to="/admin"
+                      className="flex items-center space-x-2 text-white no-underline"
+                    >
+                      <div className="bg-yellow-500 h-1 w-8"></div>
+                      <span className="text-lg">管理者画面</span>
+                    </Link>
+                    <button
+                      onClick={onLogout}
+                      className="flex items-center space-x-2"
+                    >
+                      <div className="bg-yellow-500 h-1 w-8"></div>
+                      <span className="text-lg">ログアウト</span>
+                    </button>
+                    <button
+                      onClick={() => setIsMenuOpen(false)}
+                      className="absolute top-5 right-5"
+                    >
+                      <svg
+                        className="w-7 h-7"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Main Content */}
