@@ -20,27 +20,6 @@ import { useTranslation } from "react-i18next";
 import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
-import { data } from "autoprefixer";
-
-const renderDatePicker = ({
-  input,
-  placeholder,
-  defaultValue,
-  meta: { touched, error },
-}) => (
-  <div>
-    <DatePicker
-      {...input}
-      dateFormat="yyyy/MM/dd"
-      locale="ja"
-      selected={input.value ? new Date(input.value) : null}
-      onChange={input.onChange}
-      placeholderText={placeholder}
-      className="border p-2 rounded-lg focus:ring focus:ring-indigo-200"
-    />
-    {touched && error && <span className="text-red-600">{error}</span>}
-  </div>
-);
 
 const AdminStaffAttendance = (props) => {
   const dispatch = useDispatch();
@@ -186,17 +165,7 @@ const AdminStaffAttendance = (props) => {
             管理者画面
           </Link>
         </div>
-        <div className="flex flex-col">
-          <h4 className="m-2 pl-5">日付検索</h4>
-          <form>
-            <Field
-              name="date"
-              component={renderDatePicker}
-              placeholder="日付"
-            />
-            {/* その他のフィールドやボタン */}
-          </form>
-
+        <div className="">
           {/* Main Content */}
           <div className="container-fluid">
             <div className="row justify-content-center pl-2">

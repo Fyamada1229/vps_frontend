@@ -1,7 +1,6 @@
 import React from "react";
 
 const CalendarControls = ({ onNextMonth, onPreviousMonth }) => {
-  console.log(onNextMonth);
   return (
     <div className="flex justify-between mb-4">
       <button

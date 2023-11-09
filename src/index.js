@@ -8,6 +8,7 @@ import New from "./page/New";
 import NewConfrim from "./page/NewConfrim";
 import Product from "./page/Product";
 import Admin from "./page/Admin";
+import UserShow from "./page/UserShow";
 import AdminNew from "./page/AdminNew";
 import AdminEdit from "./page/AdminEdit";
 import AdminEditConfrim from "./page/AdminNewConfrim";
@@ -61,6 +62,7 @@ root.render(
             isPublic
           />
           <PrivateRoute path="/home" component={Home} />
+          <PrivateRoute path="/user_show" component={UserShow} />
           <PrivateRoute path="/admin" component={Admin} />
           <PrivateRoute path="/admin_new" component={AdminNew} />
           <PrivateRoute

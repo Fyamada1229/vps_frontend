@@ -237,28 +237,17 @@ const Home = (props) => {
                 paddingLeft: "15px",
               }}
             >
-              <a
-                href="#"
+              <Link
                 className="list-group-item list-group-item-action"
+                to="user_show"
                 style={{
                   marginBottom: "10px",
                   backgroundColor: "#f0f0f0",
                   border: "none",
                 }}
               >
-                マイ ページ
-              </a>
-              <a
-                href="#"
-                className="list-group-item list-group-item-action"
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: "#f0f0f0",
-                  border: "none",
-                }}
-              >
-                出勤日確認
-              </a>
+                出勤簿
+              </Link>
               <Link
                 className="list-group-item list-group-item-action"
                 to="/admin"

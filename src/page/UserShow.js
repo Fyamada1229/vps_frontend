@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import styles from "../styles.module.css";
 import { Link } from "react-router-dom";
 import {
-  getUsersData,
+  getUser,
   employeeAttendanceUserSerach,
 } from "../reducers/usersReducer";
 import { connect, useSelector, useDispatch } from "react-redux";
@@ -13,14 +13,18 @@ import { Dropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import CalendarControls from "../components/CalendarControls";
 
-const AdminStaffAttendanceShow = (props) => {
+const UserShow = (props) => {
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
-  const user = useSelector((state) => state?.usersReducer?.user?.users);
+  const user = useSelector((state) => state?.usersReducer?.user?.user);
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
-  const { id } = useParams();
+
+  const id = user?.id;
+
+  console.log(id);
+
   const [currentMonthDays, setCurrentMonthDays] = useState([]);
 
   const db = useSelector(
@@ -28,11 +32,14 @@ const AdminStaffAttendanceShow = (props) => {
       state?.usersReducer?.employee_attendances_user?.employee_attendance
   );
 
+  useEffect(() => {
+    dispatch(getUser());
+  }, [dispatch]);
+
   // このuseEffectでidの変更を監視しています
   useEffect(() => {
-    dispatch({ type: "RESET_STORE" }); // ステートを初期化する
     dispatch(employeeAttendanceUserSerach(id));
-  }, [id, dispatch]);
+  }, [dispatch]);
 
   const formatDate = (date) => {
     return date.toLocaleDateString("ja-JP");
@@ -287,7 +294,7 @@ const AdminStaffAttendanceShow = (props) => {
                     </table>
                   </div>
                   <Link
-                    to="/admin_staff_attendance"
+                    to="/home"
                     className="h-14 block w-full mt-4 pt-3 bg-blue-600 text-white rounded-lg hover:bg-blue-400 text-center no-underline"
                   >
                     戻る
@@ -303,5 +310,5 @@ const AdminStaffAttendanceShow = (props) => {
 };
 
 export default reduxForm({
-  form: "adminStaffAttendanceShowForm",
-})(AdminStaffAttendanceShow);
+  form: "userShowForm",
+})(UserShow);
