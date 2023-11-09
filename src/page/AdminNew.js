@@ -62,8 +62,8 @@ const renderField = ({
 };
 
 const AdminNew = (props) => {
-  const formValue = useSelector((state) => state?.form?.newForm?.values);
-  const newFormError = useSelector((state) => state?.form?.newForm);
+  const formValue = useSelector((state) => state?.form?.adimNewForm?.values);
+  const newFormError = useSelector((state) => state?.form?.adimNewForm);
   const dispatch = useDispatch();
   const { handleSubmit, submitFailed, pristine, invalid } = props;
   const { t, i18n } = useTranslation();
@@ -73,6 +73,7 @@ const AdminNew = (props) => {
   };
 
   const onSubmit = (formValues) => {
+    console.log(formValue);
     dispatch(addUser(formValues));
     props.history.push("/adimn_new_confrim");
   };
@@ -177,6 +178,7 @@ const AdminNew = (props) => {
 };
 
 export default reduxForm({
+  validate,
   form: "adimNewForm",
   destroyOnUnmount: false,
 })(AdminNew);

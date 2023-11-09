@@ -19,11 +19,8 @@ import { useHistory } from "react-router-dom";
 const NewConfrim = (props) => {
   const [loading, setLoading] = useState(false);
   const userReducer = useSelector((state) => state?.usersReducer);
-  const formValue = useSelector((state) => state);
   const history = useHistory();
   const dispatch = useDispatch();
-
-  console.log(formValue);
 
   const user = Object.entries(userReducer);
   const data = user?.map((data) => data[1]);

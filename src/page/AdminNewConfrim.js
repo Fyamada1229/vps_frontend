@@ -20,24 +20,20 @@ import { useTranslation } from "react-i18next";
 
 const AdminNewConfrim = (props) => {
   const [loading, setLoading] = useState(false);
-  const userReducer = useSelector((state) => state?.usersReducer);
-  const formValue = useSelector((state) => state);
   const history = useHistory();
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
+  const newUser = useSelector((state) => state?.usersReducer?.user);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
 
-  const user = Object.entries(userReducer);
-  const data = user?.map((data) => data[1]);
-
   const onPost = async (event) => {
     event.preventDefault();
     setLoading(true);
-    await dispatch(registerUser(data[0])).then(async () => {
-      const loggedIn = await dispatch(loginUser(data[0]));
+    await dispatch(registerUser(newUser)).then(async () => {
+      const loggedIn = await dispatch(loginUser(newUser));
       if (loggedIn) {
         reset();
         history.push("/Admin");
@@ -48,7 +44,7 @@ const AdminNewConfrim = (props) => {
   };
 
   const reset = () => {
-    dispatch(initialize("newForm", {}));
+    dispatch(initialize("adimNewForm", {}));
     props.reset();
   };
 
@@ -103,7 +99,7 @@ const AdminNewConfrim = (props) => {
                             plaintext
                             readOnly
                             className="p-0"
-                            value={data[0]?.name}
+                            value={newUser?.name}
                             style={{
                               fontSize: "18px",
                               fontWeight: "bold",
@@ -124,7 +120,7 @@ const AdminNewConfrim = (props) => {
                           <Form.Control
                             plaintext
                             readOnly
-                            value={data[0]?.email}
+                            value={newUser?.email}
                             className="p-0"
                             style={{
                               fontSize: "18px",
@@ -146,7 +142,7 @@ const AdminNewConfrim = (props) => {
                           <Form.Control
                             plaintext
                             readOnly
-                            value={data[0]?.password}
+                            value={newUser?.password}
                             className="p-0"
                             style={{
                               fontSize: "18px",
