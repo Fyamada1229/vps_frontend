@@ -4,7 +4,7 @@
 
 axios<br>
 React bootstrap<br>
-tailwindow css<br>
+tailwind css<br>
 Redux toolkit<br>
 Redux form<br>
 Redux thunk<br>
