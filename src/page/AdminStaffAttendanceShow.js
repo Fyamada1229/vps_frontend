@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styles from "../styles.module.css";
 import { Link } from "react-router-dom";
+import editIcon from "../images/edit.png"; // 画像へのパスをインポートします
 import {
   getUsersData,
   employeeAttendanceUserSerach,
@@ -152,13 +153,35 @@ const AdminStaffAttendanceShow = (props) => {
     history.push("/admin_staff_attendance");
   };
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <>
       <Card.Header
         className="bg-primary text-white d-flex justify-content-between align-items-center"
         style={{ height: "60px", paddingRight: "0" }}
       >
-        <h4 className="m-2 pl-5">ジェン カンリ</h4>
+        <h4 className="mt-6 ml-4  h-10">ジェン カンリ</h4>
+        {/* スマートフォン画面 */}
+        {/* <div className="sm:hidden h-14">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-white focus:outline-none bg-blue-500 rounded-full p-2 ml-4 mt-1"
+          >
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div> */}
+        {/* */}
         <Dropdown>
           <Dropdown.Toggle
             id="dropdown-basic"
@@ -196,27 +219,33 @@ const AdminStaffAttendanceShow = (props) => {
                       <tr>
                         <th
                           scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-4 sm:py-2 sm:text-sm"
+                          className="px-4 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-4 sm:py-2 sm:text-sm"
                         >
                           日付
                         </th>
                         <th
                           scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48"
                         >
                           始業時間
                         </th>
                         <th
                           scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48"
                         >
                           退勤時間
                         </th>
                         <th
                           scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider smax:pr-1 smax:pl-1"
                         >
                           コメント
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10 smax:w-36"
+                        >
+                          編集
                         </th>
                       </tr>
                     </thead>
@@ -228,19 +257,32 @@ const AdminStaffAttendanceShow = (props) => {
                             index % 2 === 0 ? "bg-white" : "bg-gray-100"
                           }
                         >
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs font-medium text-gray-900">
                             {dayData?.date?.toLocaleDateString("ja-JP")}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {dayData?.attendance_time}
+                          <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-gray-500">
+                            {/* {dayData?.attendance_time.split(" ")[0]}
+                            <br /> */}
+                            {dayData?.attendance_time.split(" ")[1]}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {dayData?.departure_time}
+                          <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-gray-500">
+                            {/* {dayData?.departure_time.split(" ")[0]}
+                            <br /> */}
+                            {dayData?.departure_time.split(" ")[1]}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-gray-500">
                             {dayData?.comment}
                             <br />
                             {dayData?.end_comment}
+                          </td>
+                          <td className="whitespace-nowrap text-sm smax:text-xs text-gray-500">
+                            <Link
+                              to={`/admin_staff_attendance_edit/${id}/${dayData?.date?.toLocaleDateString(
+                                "ja-JP"
+                              )}`}
+                            >
+                              <img src={editIcon} alt="Edit" />
+                            </Link>
                           </td>
                         </tr>
                       ))}

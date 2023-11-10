@@ -246,7 +246,7 @@ const Home = (props) => {
           </Card.Header>
 
           {/* Sidebar and Content */}
-          <div className="d-flex flex-grow-1">
+          <div className="d-flex flex-grow-1" style={{ height: "600px" }}>
             {/* SidebarPC画面用 */}
             <div className="smax:hidden">
               <div

@@ -22,6 +22,7 @@ import {
   departureUpdate,
   getUsersData,
 } from "../reducers/usersReducer";
+import editIcon from "../images/edit.png";
 import { useHistory } from "react-router-dom";
 import { getUser } from "../reducers/usersReducer";
 import { Link } from "react-router-dom";
@@ -67,23 +68,16 @@ const Admin = (props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div
-      className="container-fluid p-0"
-      style={{ height: "100vh", maxWidth: "1800px", margin: "0 auto" }}
-    >
-      <div className="row no-gutters" style={{ height: "100%" }}>
+    <div className="container-fluid p-0">
+      <div className="row no-gutters">
         {/* Main Content */}
-        <div
-          className="col-md-12 d-flex flex-column p-0"
-          style={{ height: "100%" }}
-        >
+        <div className="col-md-12 d-flex flex-column p-0">
           <Card.Header
             className="bg-primary text-white d-flex justify-content-between align-items-center"
             style={{ height: "60px", paddingRight: "0" }}
           >
-            <h4 className="smax:hidden mt-6 ml-4 pl-5 h-10">ジェン カンリ</h4>
-            {/* スマートフォン画面 */}
-            <div className="sm:hidden h-14">
+            <h4 className="smax:hidden m-2 pl-5">ジェン カンリ</h4>
+            <div className="sm:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="text-white focus:outline-none bg-blue-500 rounded-full p-2 ml-4 mt-1"
@@ -197,18 +191,11 @@ const Admin = (props) => {
                   {/* メニューアイテムのリスト */}
                   <div className="space-y-4">
                     <Link
-                      to="home"
+                      to="/home"
                       className="flex items-center space-x-2 text-white no-underline"
                     >
                       <div className="bg-yellow-500 h-1 w-8"></div>
                       <span className="text-lg">ホーム</span>
-                    </Link>
-                    <Link
-                      to="admin_staff_attendance"
-                      className="flex items-center space-x-2 text-white no-underline"
-                    >
-                      <div className="bg-yellow-500 h-1 w-8"></div>
-                      <span className="text-lg">スタッフ出勤簿</span>
                     </Link>
                     <Link
                       to="admin_new"
@@ -216,6 +203,13 @@ const Admin = (props) => {
                     >
                       <div className="bg-yellow-500 h-1 w-8"></div>
                       <span className="text-lg">スタッフ新規登録</span>
+                    </Link>
+                    <Link
+                      to="admin_staff_attendance"
+                      className="flex items-center space-x-2 text-white no-underline"
+                    >
+                      <div className="bg-yellow-500 h-1 w-8"></div>
+                      <span className="text-lg">スタッフ出勤簿</span>
                     </Link>
                     <button
                       onClick={onLogout}
@@ -226,7 +220,7 @@ const Admin = (props) => {
                     </button>
                     <button
                       onClick={() => setIsMenuOpen(false)}
-                      className="absolute top-5 right-24"
+                      className="absolute top-5 right-5"
                     >
                       <svg
                         className="w-7 h-7"
@@ -246,42 +240,69 @@ const Admin = (props) => {
             </div>
 
             {/* Main Content */}
-            <div className="container-fluid">
-              <div className="row justify-content-center pl-2">
-                <h3 className="pt-3">登録者</h3>
-                <Card.Body>
-                  <div className="">
-                    <Table responsive="ms" striped bordered hover>
-                      <thead>
-                        <tr>
-                          <th>id</th>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Registration Date</th>
-                          <th>Edit</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {users?.map((data) => (
-                          <tr key={data.id}>
-                            <td>{data.id}</td>
-                            <td>{data.name}</td>
-                            <td>{data.email}</td>
-                            <td>{data.created_at.split("T")[0]}</td>
-                            <td>
-                              <Link to={`/admin_Edit/${data.id}`}>編集</Link>
-                            </td>
+            <div className="container mx-auto px-4">
+              <h3 className="pt-3">登録者</h3>
+              <div className="flex flex-col">
+                <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th
+                              scope="col"
+                              className="smax: px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                              id
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                              名前
+                            </th>
+                            {/* <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                              Account ID
+                            </th>  */}
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                              編集
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </Table>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {users?.map((user) => (
+                            <tr key={user?.id}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs font-medium text-gray-900">
+                                {user?.id}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-gray-500">
+                                {user?.name}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-center text-gray-500">
+                                <Link
+                                  to={`/admin_Edit/${user?.id}`}
+                                  className="text-indigo-600 hover:text-indigo-900 inline-block"
+                                >
+                                  <img src={editIcon} alt="Edit" />
+                                </Link>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </Card.Body>
-                <Card.Footer></Card.Footer>
+                </div>
               </div>
               <h3 className="mt-5">言語切り替え ：{t("Hello")}</h3>
-              <Card.Footer className="mt-auto"></Card.Footer>
             </div>
+            {/* Main end */}
           </div>
         </div>
       </div>

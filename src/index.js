@@ -15,6 +15,7 @@ import AdminEditConfrim from "./page/AdminNewConfrim";
 import reportWebVitals from "./reportWebVitals";
 import AdminStaffAttendance from "./page/AdminStaffAttendance";
 import AdminStaffAttendanceShow from "./page/AdminStaffAttendanceShow";
+import AdminStaffAttendanceShowEdit from "./page/AdminStaffAttendanceShowEdit";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
@@ -76,6 +77,10 @@ root.render(
           <PrivateRoute
             path="/admin_staff_attendance_show/:id"
             component={AdminStaffAttendanceShow}
+          />
+          <PrivateRoute
+            path="/admin_staff_attendance_edit/:id/:year/:month/:day"
+            component={AdminStaffAttendanceShowEdit}
           />
           <PrivateRoute path="/admin_edit/:id" component={AdminEdit} />
         </Switch>
