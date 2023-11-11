@@ -263,12 +263,12 @@ const AdminStaffAttendanceShow = (props) => {
                           <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-gray-500">
                             {/* {dayData?.attendance_time.split(" ")[0]}
                             <br /> */}
-                            {dayData?.attendance_time.split(" ")[1]}
+                            {dayData?.attendance_time?.split(" ")[1]}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-gray-500">
                             {/* {dayData?.departure_time.split(" ")[0]}
                             <br /> */}
-                            {dayData?.departure_time.split(" ")[1]}
+                            {dayData?.departure_time?.split(" ")[1]}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-gray-500">
                             {dayData?.comment}

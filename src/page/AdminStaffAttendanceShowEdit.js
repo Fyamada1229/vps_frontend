@@ -14,81 +14,133 @@ import { Dropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import CalendarControls from "../components/CalendarControls";
 import { useHistory } from "react-router-dom";
+import { romanToArabic } from "../components/RomanToArabic";
 
-const TimeInputStart = ({ label }) => {
-  return (
-    <div className="mb-6">
-      <label className="block text-sm font-medium text-gray-700">
-        {label} <span className="text-red-500">*</span>
-      </label>
-      <div className="mt-1 flex gap-2">
-        <Field
-          name="start_hour"
-          className="mt-1 block w-2/5 pl-3 pr-10 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          component="input"
-          type="text"
-          maxLength="2"
-          placeholder="hour"
-        />
-        <span className="text-gray-700">:</span>
-        <Field
-          name="start_minutes"
-          className="mt-1 block w-2/5 pl-3 pr-10 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          component="input"
-          type="text"
-          maxLength="2"
-          placeholder="minutes"
+// バリデーション関数
+const required = (value) => (value ? undefined : "");
+
+const hourValidation = (value) =>
+  value && parseInt(value, 10) >= 0 && parseInt(value, 10) < 25
+    ? undefined
+    : "1〜24までの数字";
+const minuteValidation = (value) =>
+  value && parseInt(value, 10) >= 0 && parseInt(value, 10) < 60
+    ? undefined
+    : "0〜59までの数字";
+
+const restValidation = (value) =>
+  value && parseInt(value, 10) >= 0 && parseInt(value, 10) < 1000
+    ? undefined
+    : "入力がありません。";
+
+const renderField = ({
+  input,
+  label,
+  type,
+  meta: { touched, error },
+  placeholder,
+  maxLength,
+  className,
+}) => (
+  <div className="mb-6">
+    <label className="block text-sm font-medium text-gray-700">
+      <p className="smax:text-xs m-0">{label}</p>
+      <span className="text-red-500">*</span>
+    </label>
+    <div>
+      <div className="mt-1">
+        <input
+          {...input}
+          type={type}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          className={`${className} ${touched && error ? "border-red-500" : ""}`}
         />
       </div>
+      <div className="h-1">
+        {touched && error ? (
+          <span className="text-red-500 text-xs mt-1">{error}</span>
+        ) : (
+          <span className="text-transparent text-xs mt-1">
+            エラープレースホルダー
+          </span>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
+const TimeInputStart = ({ label }) => {
+  //タスクiPhoneの画面サイズにすると始業時間が時、分が見えない状態である。
+  return (
+    <div className="flex gap-2 items-center">
+      <Field
+        name="start_hour"
+        type="text"
+        component={renderField}
+        label={label}
+        validate={[required, hourValidation]}
+        placeholder="hour"
+        maxLength="2"
+        className="mt-1 block w-full pl-2 pr-3 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+      />
+      <span className="text-gray-700">:</span>
+      <Field
+        name="start_minutes"
+        type="text"
+        component={renderField}
+        label="&nbsp;" // ラベルは不要なので、空白を使用
+        validate={[required, minuteValidation]}
+        placeholder="minutes"
+        maxLength="2"
+        className="mt-1 block w-full pl-2 pr-3 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+      />
     </div>
   );
 };
 
 const TimeInputEnd = ({ label }) => {
+  //タスクiPhoneの画面サイズにすると退勤時間が時、分が見えない状態である。
   return (
-    <div className="mb-6">
-      <label className="block text-sm font-medium text-gray-700">
-        {label} <span className="text-red-500">*</span>
-      </label>
-      <div className="mt-1 flex gap-2">
-        <Field
-          name="end_hour"
-          className="mt-1 block w-2/5 pl-3 pr-10 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          component="input"
-          type="text"
-          maxLength="2"
-          placeholder="hour"
-        />
-        <span className="text-gray-700">:</span>
-        <Field
-          name="end_minutes"
-          className="mt-1 block w-2/5 pl-3 pr-10 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          component="input"
-          type="text"
-          maxLength="2"
-          placeholder="minutes"
-        />
-      </div>
+    <div className="flex gap-2 items-center">
+      <Field
+        name="end_hour"
+        type="text"
+        component={renderField}
+        label={label}
+        validate={[required, hourValidation]}
+        placeholder="hour"
+        maxLength="2"
+        className="mt-1 block w-full pl-2 pr-3 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+      />
+      <span className="text-gray-700">:</span>
+      <Field
+        name="end_minutes"
+        type="text"
+        component={renderField}
+        label="&nbsp;" // ラベルは不要なので、空白を使用
+        validate={[required, minuteValidation]}
+        placeholder="minutes"
+        maxLength="2"
+        className="mt-1 block w-full pl-2 pr-3 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+      />
     </div>
   );
 };
 
 const TimeInputBreak = ({ label }) => {
   return (
-    <div className="mb-6">
-      <label className="block text-sm font-medium text-gray-700">
-        {label} <span className="text-red-500">*</span>
-      </label>
-      <div className="mt-1 flex gap-2">
-        <Field
-          name="departure_time"
-          className="mt-1 block w-2/5 pl-3 pr-10 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          component="input"
-          type="text"
-          maxLength="2"
-          placeholder="minutes"
-        />
-      </div>
+    <div className="flex gap-2 items-center">
+      <Field
+        name="rest_time"
+        type="text"
+        component={renderField}
+        label={label}
+        validate={[required, restValidation]}
+        placeholder="hour"
+        maxLength="3"
+        className="mt-1 block w-full pl-2 pr-3 py-2 text-base border-gray-300 bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+      />
     </div>
   );
 };
@@ -97,22 +149,36 @@ const AdminStaffAttendanceShowEdit = (props) => {
   const { t, i18n } = useTranslation();
   const { id, year, month, day } = useParams();
   const { handleSubmit, submitFailed, pristine, invalid } = props;
-  const formValue = useSelector((state) => state?.form);
+  const dispatch = useDispatch();
+  //const formValue = useSelector((state) => state?.form.);
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
+  const form = useSelector(
+    (state) =>
+      state?.form?.adminStaffAttendanceShowEditForm?.syncErrors?.rest_time
+  );
+  console.log(form);
 
   // 日付を 'yyyy-mm-dd' の形式で組み立てる
   const date = `${year}-${month}-${day}`;
-  console.log(date); // 例: "2023-11-01"
-  console.log(formValue);
+
+  //オブジェクトnull判定用
+  const isEmptyObject = (obj) => {
+    return obj === null || (obj && Object.keys(obj).length === 0);
+  };
 
   const onSubmit = (formValues) => {
-    // フォームからの値を2桁に整形するため
+    if (isEmptyObject(formValues)) {
+      return alert("入力されている時間がないです。");
+    }
+    // ローマ数字をアラビア数字に変換する関数を呼び出し
+    romanToArabic(formValues);
+
     const padTo2Digits = (num) => {
-      return num.toString().padStart(2, "0");
+      return romanToArabic(num)?.toString()?.padStart(2, "0");
     };
-    // formValuesから時間をHH:MM形式で取得して結合
+
     const attendanceTimeStart = `${date} ${padTo2Digits(
       formValues.start_hour
     )}:${padTo2Digits(formValues.start_minutes)}:00`;
@@ -120,15 +186,41 @@ const AdminStaffAttendanceShowEdit = (props) => {
       formValues.end_hour
     )}:${padTo2Digits(formValues.end_minutes)}:00`;
 
+    const timePart = attendanceTimeStart?.split(" ")[1]; // 例　"10:40:00"を取得します
+    const startHour = timePart?.split(":")[0];
+    const startMinutes = timePart?.split(":")[1];
+
+    const timePartEnd = attendanceTimeEnd?.split(" ")[1];
+    const endHour = timePartEnd?.split(":")[0];
+    const endMinutes = timePartEnd?.split(":")[1];
+
+    const restTime = formValues.rest_time;
+
+    if (Number(startHour) >= 24 || Number(startMinutes) >= 59) {
+      return alert("始業時間の時間入力が間違っています。");
+    }
+
+    if (Number(endHour) >= 24 || Number(endMinutes) >= 59) {
+      return alert("退勤時間の時間入力が間違っています。");
+    }
+
     const data = {
       date: date,
       attendance_time: attendanceTimeStart,
       departure_time: attendanceTimeEnd,
+      rest_time: restTime,
     };
 
     console.log(data);
+    // 以下のコメントアウトされたコードは、実際のデータ処理に使用します
     // dispatch(addUser(formValues));
     // props.history.push("/admin_staff_attendance_show");
+  };
+
+  // 登録した後に再度、新規登録をすると以前の入力したデータが残っている
+  const restForm = () => {
+    dispatch(initialize("adminStaffAttendanceShowEditForm", {}));
+    props.reset();
   };
 
   return (
@@ -179,12 +271,15 @@ const AdminStaffAttendanceShowEdit = (props) => {
               <Link
                 to={`/admin_staff_attendance_show/${id}`}
                 className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto text-center no-underline"
+                onClick={restForm}
               >
                 キャンセル
               </Link>
               <button
                 type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto"
+                className={`${
+                  form ? "opacity-50 pointer-events-none" : ""
+                } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto`}
               >
                 保存する
               </button>
@@ -198,4 +293,6 @@ const AdminStaffAttendanceShowEdit = (props) => {
 
 export default reduxForm({
   form: "adminStaffAttendanceShowEditForm",
+  destroyOnUnmount: false,
+  hourValidation,
 })(AdminStaffAttendanceShowEdit);
