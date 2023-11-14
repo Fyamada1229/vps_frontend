@@ -11,21 +11,22 @@ import { Dropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 const validate = (values) => {
+  console.log(values);
   const errors = {};
   if (!values.name) {
-    errors.name = "名前を入力してください";
+    errors.name = "Nameを入力してください";
   } else if (values.name.length < 1) {
-    errors.name = "名前を入力してください";
+    errors.name = "Nameを入力してください";
   }
-  if (!values.email) {
-    errors.email = "メールアドレスを入力してください";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = "メールアドレスを入力してください";
+  if (!values.account_id) {
+    errors.account_id = "Account IDを入力してください";
+  } else if (values.account_id.length < 5) {
+    errors.account_id = "Account 5文字以上入力してください";
   }
   if (!values.password) {
-    errors.password = "パスワードの入力してください";
+    errors.password = "Passwordを入力してください";
   } else if (values.password.length < 5) {
-    errors.password = "5文字以上入力してください";
+    errors.password = "Passwordを5文字以上入力してください";
   }
   return errors;
 };
@@ -115,9 +116,9 @@ const AdminNew = (props) => {
       </Card.Header>
 
       <div className="">
-        <h1 className="lg:w-1/5 lg:m-auto pt-10 pb-10 smax:w-10/12 smax:m-auto smax:pt-5 ">
-          新規登録
-        </h1>
+        <h2 className="lg:w-1/5 lg:m-auto pt-10 pb-10 smax:w-10/12 smax:m-auto smax:pt-5 ">
+          New Registration
+        </h2>
         <div className="border rounded w-2/4 m-auto smax:mt-10 smax:w-11/12 bg-white">
           <Form
             className="w-2/5 m-auto smax:w-80"
@@ -125,7 +126,7 @@ const AdminNew = (props) => {
           >
             <Form.Group controlId="formBasicEmail">
               <Field
-                label="名前"
+                label="Name"
                 name="name"
                 id="name"
                 type="text"
@@ -134,9 +135,9 @@ const AdminNew = (props) => {
                 submitFailed={submitFailed}
               />
               <Field
-                name="email"
-                label="メールアドレス"
-                id="email"
+                name="account_id"
+                label="Account ID"
+                id="account_id"
                 type="text"
                 placeholder="about@about.com"
                 value={formValue?.email}
@@ -144,7 +145,7 @@ const AdminNew = (props) => {
                 submitFailed={submitFailed}
               />
               <Field
-                label="パスワード"
+                label="Password"
                 name="password"
                 type="text"
                 id="password"
@@ -160,15 +161,11 @@ const AdminNew = (props) => {
                 variant="secondary"
                 onClick={restForm}
               >
-                戻る
+                Back
               </Button>
             </Link>
-            <Button
-              type="submit"
-              className={styles.button}
-              disabled={pristine || invalid}
-            >
-              確認画面へ
+            <Button type="submit" className={styles.button}>
+              Confirmation
             </Button>
           </Form>
         </div>

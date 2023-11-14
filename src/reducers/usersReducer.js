@@ -16,6 +16,7 @@ import {
   updateEmployeeAttendance,
   postDeparture,
   updateState,
+  postAdminStaffAttendanceEdit,
 } from "./actions";
 import setAuthToken from "../setAuthToken";
 
@@ -57,6 +58,23 @@ export const registerUser = (data) => {
       const newUser = response.data;
       dispatch(registerUserSuccess(newUser));
       dispatch(loginUser(data));
+    } catch (error) {
+      console.error("登録処理ができません:", error);
+    }
+  };
+};
+
+export const registerAdmin = (data) => {
+  console.log(data);
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:80/api/register",
+        data
+      );
+
+      const newUser = response.data;
+      dispatch(registerUserSuccess(newUser));
     } catch (error) {
       console.error("登録処理ができません:", error);
     }
@@ -331,6 +349,32 @@ export const departureUpdateState = () => {
       .catch((error) => {
         console.log("Fetch error:", error);
       });
+  };
+};
+
+export const adminStaffAttendanceEditPost = (data) => {
+  console.log(data);
+  return async (dispatch) => {
+    try {
+      // 認証トークンを含むヘッダーを設定
+      const config = {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      };
+
+      // ヘッダーを追加してPOSTリクエストを送る
+      const response = await axios.post(
+        "http://localhost:80/api/users/admin_staff_attendance_edit",
+        data,
+        config
+      );
+
+      const post = response.data;
+      dispatch(postAdminStaffAttendanceEdit(post));
+    } catch (error) {
+      console.error("登録処理ができません:", error);
+    }
   };
 };
 

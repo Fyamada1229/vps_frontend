@@ -5,6 +5,7 @@ import editIcon from "../images/edit.png"; // 画像へのパスをインポー�
 import {
   getUsersData,
   employeeAttendanceUserSerach,
+  adminStaffAttendanceEditPost,
 } from "../reducers/usersReducer";
 import { connect, useSelector, useDispatch } from "react-redux";
 import { Field, reduxForm, getFormValues, initialize } from "redux-form";
@@ -19,19 +20,38 @@ import { romanToArabic } from "../components/RomanToArabic";
 // バリデーション関数
 const required = (value) => (value ? undefined : "");
 
-const hourValidation = (value) =>
-  value && parseInt(value, 10) >= 0 && parseInt(value, 10) < 25
-    ? undefined
-    : "1〜24までの数字";
-const minuteValidation = (value) =>
-  value && parseInt(value, 10) >= 0 && parseInt(value, 10) < 60
-    ? undefined
-    : "0〜59までの数字";
+const zenkakuToHankaku = (value) => {
+  return value?.replace(/[０-９]/g, (s) => {
+    return String?.fromCharCode(s?.charCodeAt(0) - 0xfee0);
+  });
+};
 
-const restValidation = (value) =>
-  value && parseInt(value, 10) >= 0 && parseInt(value, 10) < 1000
+const hourValidation = (value) => {
+  const convertedValue = zenkakuToHankaku(value);
+  return convertedValue &&
+    parseInt(convertedValue, 10) >= 0 &&
+    parseInt(convertedValue, 10) < 25
     ? undefined
-    : "入力がありません。";
+    : "1〜24までの数字を入力してください。";
+};
+
+const minuteValidation = (value) => {
+  const convertedValue = zenkakuToHankaku(value);
+  return convertedValue &&
+    parseInt(convertedValue, 10) >= 0 &&
+    parseInt(convertedValue, 10) < 60
+    ? undefined
+    : "0〜59までの数字を入力してください。";
+};
+
+const restValidation = (value) => {
+  const convertedValue = zenkakuToHankaku(value);
+  return convertedValue &&
+    parseInt(convertedValue, 10) >= 0 &&
+    parseInt(convertedValue, 10) < 1000
+    ? undefined
+    : "0〜999までの数字を入力してください。";
+};
 
 const renderField = ({
   input,
@@ -150,7 +170,12 @@ const AdminStaffAttendanceShowEdit = (props) => {
   const { id, year, month, day } = useParams();
   const { handleSubmit, submitFailed, pristine, invalid } = props;
   const dispatch = useDispatch();
-  //const formValue = useSelector((state) => state?.form.);
+  // nameほ比較してとる
+  const users = useSelector((state) => state?.usersReducer?.user?.users);
+
+  const user = users?.find((user) => user?.id === Number(id));
+  const userName = user?.name;
+
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
@@ -158,7 +183,10 @@ const AdminStaffAttendanceShowEdit = (props) => {
     (state) =>
       state?.form?.adminStaffAttendanceShowEditForm?.syncErrors?.rest_time
   );
-  console.log(form);
+
+  useEffect(() => {
+    dispatch(getUsersData());
+  }, [dispatch]);
 
   // 日付を 'yyyy-mm-dd' の形式で組み立てる
   const date = `${year}-${month}-${day}`;
@@ -205,16 +233,20 @@ const AdminStaffAttendanceShowEdit = (props) => {
     }
 
     const data = {
+      user_id: id,
+      name: userName,
       date: date,
       attendance_time: attendanceTimeStart,
       departure_time: attendanceTimeEnd,
-      rest_time: restTime,
+      break_minutes: restTime,
+      is_departure: "1",
     };
 
     console.log(data);
-    // 以下のコメントアウトされたコードは、実際のデータ処理に使用します
-    // dispatch(addUser(formValues));
-    // props.history.push("/admin_staff_attendance_show");
+
+    dispatch(adminStaffAttendanceEditPost(data));
+    props.reset();
+    props.history.push(`/admin_staff_attendance_show/${id}`);
   };
 
   // 登録した後に再度、新規登録をすると以前の入力したデータが残っている

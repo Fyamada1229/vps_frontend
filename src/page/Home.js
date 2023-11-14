@@ -81,7 +81,7 @@ const Home = (props) => {
   const handleAttendanceClick = () => {
     // データが空だった場合の念の為
     if (!user) {
-      alert("プログラムに問題があります");
+      alert("もう一度ボタンを押してください。");
       return;
     }
 
@@ -117,7 +117,7 @@ const Home = (props) => {
   const handleDepartureClick = () => {
     // データが空だった場合の念の為
     if (!user) {
-      alert("プログラムに問題があります");
+      alert("もう一度ボタンを押してください。");
       return;
     }
 
@@ -158,12 +158,11 @@ const Home = (props) => {
     (state) => state?.usersReducer.departure?.departures?.next_reset_time
   );
 
-  console.log(isDeparture);
-  console.log(isAttendance);
+  const adminFlag = user?.admin_flag;
+  console.log(adminFlag);
 
   // IDを渡す作業をする
   const onSubmit = (values) => {
-    console.log(values);
     if (values?.comment) {
       const id = user?.id;
       values.id = id;
@@ -187,6 +186,8 @@ const Home = (props) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  console.log(user);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -269,17 +270,19 @@ const Home = (props) => {
                 >
                   出勤簿
                 </Link>
-                <Link
-                  className="list-group-item list-group-item-action"
-                  to="/admin"
-                  style={{
-                    marginBottom: "10px",
-                    backgroundColor: "#f0f0f0",
-                    border: "none",
-                  }}
-                >
-                  管理者画面
-                </Link>
+                {adminFlag === 1 ? (
+                  <Link
+                    className="list-group-item list-group-item-action"
+                    to="/admin"
+                    style={{
+                      marginBottom: "10px",
+                      backgroundColor: "#f0f0f0",
+                      border: "none",
+                    }}
+                  >
+                    管理者画面
+                  </Link>
+                ) : null}
                 <Button
                   className="list-group-item list-group-item-action"
                   style={{

@@ -126,7 +126,7 @@ const Admin = (props) => {
                 style={{
                   minWidth: "230px",
                   backgroundColor: "#f0f0f0",
-                  height: "calc(100vh - 60px)",
+                  height: "calc(100vh)",
                   paddingLeft: "15px",
                 }}
               >
@@ -259,7 +259,7 @@ const Admin = (props) => {
                               scope="col"
                               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                              名前
+                              Name
                             </th>
                             {/* <th
                               scope="col"
@@ -271,7 +271,7 @@ const Admin = (props) => {
                               scope="col"
                               className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                              編集
+                              Edit
                             </th>
                           </tr>
                         </thead>

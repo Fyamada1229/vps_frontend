@@ -12,6 +12,7 @@ export const DEPARTURE_UPDATE_STATE = "DEPARTURE_UPDATE_STATE";
 export const UPDATE_EMPLOYEE_ATTENDANCE = "UPDATE_EMPLOYEE_ATTENDANCE";
 export const EMPLOYEE_ATTENDANCE_USER_SERACH =
   "EMPLOYEE_ATTENDANCE_USER_SERACH";
+export const POSTADMINSTAFFATTENDANCEEDIT = "POSTADMINSTAFFATTENDANCEEDIT";
 
 // Action creators
 export const addUser = (user) => ({
@@ -60,5 +61,10 @@ export const departureUpdateState = (data) => ({
 
 export const employeeAttendanceUserSerach = (data) => ({
   type: EMPLOYEE_ATTENDANCE_USER_SERACH,
+  payload: data,
+});
+
+export const postAdminStaffAttendanceEdit = (data) => ({
+  type: POSTADMINSTAFFATTENDANCEEDIT,
   payload: data,
 });

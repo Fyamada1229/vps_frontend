@@ -1,12 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
+//import App from "./App";
 import Login from "./page/Login";
 import Home from "./page/Home";
 import New from "./page/New";
 import NewConfrim from "./page/NewConfrim";
-import Product from "./page/Product";
 import Admin from "./page/Admin";
 import UserShow from "./page/UserShow";
 import AdminNew from "./page/AdminNew";
@@ -20,7 +19,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
-import { BrowserRouter, Switch } from "react-router-dom";
+import { BrowserRouter, Switch, Redirect } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import PrivateRoute from "./PrivateRoute";
 import { persistStore, persistReducer } from "redux-persist";
@@ -38,11 +37,11 @@ const persistedReducer = persistReducer(persistConfig, reducer);
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
-  persistedReducer, // ここを修正
+  persistedReducer,
   composeEnhancers(applyMiddleware(thunk))
 );
 
-const persistor = persistStore(store); // この行を追加
+const persistor = persistStore(store);
 
 const container = document.getElementById("root");
 const root = createRoot(container);
@@ -52,10 +51,10 @@ root.render(
     <PersistGate loading={null} persistor={persistor}>
       <BrowserRouter>
         <Switch>
-          <PrivateRoute exact path="/product" component={Product} isPublic />
-          <PrivateRoute exact path="/" component={App} isPublic />
+          {/* <PrivateRoute exact path="/" component={App} isPublic /> */}
+          <Redirect exact from="/" to="/login" />
           <PrivateRoute exact path="/login" component={Login} isPublic />
-          <PrivateRoute exact path="/new" component={New} isPublic />
+          <PrivateRoute path="/new" component={New} isPublic />
           <PrivateRoute
             exact
             path="/new_confrim"

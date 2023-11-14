@@ -88,6 +88,7 @@ const UserShow = (props) => {
           date: day,
           attendance_time: dbItem ? dbItem.attendance_time : "",
           departure_time: dbItem ? dbItem.departure_time : "",
+          break_time: dbItem ? dbItem.break_minutes : "",
           comment: dbItem ? dbItem.comment : "",
           end_comment: dbItem ? dbItem.end_comment : "",
         };
@@ -97,42 +98,52 @@ const UserShow = (props) => {
 
   const TimeCalculator = (db) => {
     const monthlyMinutes = {};
+    const monthlyBreakMinutes = {}; // 休憩時間の合計を保持するためのオブジェクト
 
     db?.forEach((item) => {
-      // 始業時間と退勤時間の両方が記録されているか確認
+      console.log(item);
       if (item.attendance_time && item.departure_time) {
         const attendanceTime = new Date(item.attendance_time);
         const departureTime = new Date(item.departure_time);
-        const minutesWorked = (departureTime - attendanceTime) / (1000 * 60);
+        const breakTime = item.break_minutes || 0; // 休憩時間が記録されていない場合は0とする
+        const minutesWorked =
+          (departureTime - attendanceTime) / (1000 * 60) - breakTime;
 
-        // 'yyyy-mm' 形式のキーを生成
         const yearMonthKey = `${attendanceTime.getFullYear()}-${String(
           attendanceTime.getMonth() + 1
         ).padStart(2, "0")}`;
 
-        // その月の合計時間を累計
         if (monthlyMinutes[yearMonthKey]) {
           monthlyMinutes[yearMonthKey] += minutesWorked;
+          monthlyBreakMinutes[yearMonthKey] += breakTime;
         } else {
           monthlyMinutes[yearMonthKey] = minutesWorked;
+          monthlyBreakMinutes[yearMonthKey] = breakTime;
         }
       }
-      // 始業時間のみの場合は無視する
     });
 
-    // 合計勤務時間を'時間と分'の形式で返す
     const monthlyWorkDurations = {};
     Object.keys(monthlyMinutes).forEach((key) => {
       const totalMinutes = Math.abs(monthlyMinutes[key]);
       const hours = Math.floor(totalMinutes / 60);
-      const minutes = Math.round(totalMinutes % 60); // 分を四捨五入
+      const minutes = Math.round(totalMinutes % 60);
       monthlyWorkDurations[key] = `${hours}h${minutes}m`;
     });
 
-    return monthlyWorkDurations;
+    // 休憩時間の合計も'時間と分'の形式で返す
+    const monthlyBreakDurations = {};
+    Object.keys(monthlyBreakMinutes).forEach((key) => {
+      const totalBreakMinutes = Math.abs(monthlyBreakMinutes[key]);
+      const breakHours = Math.floor(totalBreakMinutes / 60);
+      const breakMinutes = Math.round(totalBreakMinutes % 60);
+      monthlyBreakDurations[key] = `${breakHours}h${breakMinutes}m`;
+    });
+
+    return { monthlyWorkDurations, monthlyBreakDurations };
   };
 
-  const timeWork = TimeCalculator(db);
+  //const timeWork = TimeCalculator(db);
 
   let data = currentMonthDays;
   let count = 0;
@@ -142,13 +153,23 @@ const UserShow = (props) => {
     }
   }
 
-  const yesrMonth = currentMonthDays.map((dayData) =>
-    dayData?.date
-      ?.toLocaleDateString("ja-JP")
-      .replace("/", "-")
-      .replace("/", "-")
-      .slice(0, -2)
-  );
+  const [timeWorks, setTimeWork] = useState({
+    monthlyWorkDurations: {},
+    monthlyBreakDurations: {},
+  });
+
+  useEffect(() => {
+    const calculatedTime = TimeCalculator(db);
+    setTimeWork(calculatedTime);
+  }, [db]);
+
+  // ここでcurrentMonthDaysが定義されていると仮定します
+  const yearMonth = currentMonthDays[0]?.date
+    .toLocaleDateString("ja-JP")
+    .replace(/\//g, "-")
+    .slice(0, 7); // 'yyyy-MM'の形式になるようにスライス
+
+  console.log(currentMonthDays);
 
   return (
     <>
@@ -214,6 +235,12 @@ const UserShow = (props) => {
                           scope="col"
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
+                          休憩時間
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
                           コメント
                         </th>
                       </tr>
@@ -234,6 +261,9 @@ const UserShow = (props) => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {dayData?.departure_time}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {dayData?.break_time}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {dayData?.comment}
@@ -270,6 +300,12 @@ const UserShow = (props) => {
                           >
                             時間
                           </th>
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            休憩時間
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
@@ -278,16 +314,10 @@ const UserShow = (props) => {
                             {count}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {Object.entries(timeWork).map(([key, value]) => {
-                              const keyYearMonth = key;
-                              if (yesrMonth[0] === keyYearMonth) {
-                                // 小数点以下2桁に丸めてから切り上げる
-                                const displayValue = value;
-                                return <div key={key}>{displayValue}</div>;
-                              } else {
-                                return null;
-                              }
-                            })}
+                            {timeWorks?.monthlyWorkDurations[yearMonth]}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {timeWorks?.monthlyBreakDurations[yearMonth]}
                           </td>
                         </tr>
                       </tbody>

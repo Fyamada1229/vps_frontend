@@ -37,6 +37,11 @@ const AdminStaffAttendanceShow = (props) => {
     dispatch(employeeAttendanceUserSerach(id));
   }, [id, dispatch]);
 
+  //編集で新規登録の際の画面表示をする為
+  useEffect(() => {
+    dispatch(employeeAttendanceUserSerach(id));
+  }, [dispatch]);
+
   const formatDate = (date) => {
     return date.toLocaleDateString("ja-JP");
   };
@@ -84,6 +89,7 @@ const AdminStaffAttendanceShow = (props) => {
           date: day,
           attendance_time: dbItem ? dbItem.attendance_time : "",
           departure_time: dbItem ? dbItem.departure_time : "",
+          break_time: dbItem ? dbItem.break_minutes : "",
           comment: dbItem ? dbItem.comment : "",
           end_comment: dbItem ? dbItem.end_comment : "",
         };
@@ -91,41 +97,53 @@ const AdminStaffAttendanceShow = (props) => {
     );
   }, [currentMonth, db]);
 
+  console.log(currentMonthDays);
+
   const TimeCalculator = (db) => {
     const monthlyMinutes = {};
+    const monthlyBreakMinutes = {}; // 休憩時間の合計を保持するためのオブジェクト
 
     db?.forEach((item) => {
-      // 始業時間と退勤時間の両方が記録されているか確認
+      console.log(item);
       if (item.attendance_time && item.departure_time) {
         const attendanceTime = new Date(item.attendance_time);
         const departureTime = new Date(item.departure_time);
-        const minutesWorked = (departureTime - attendanceTime) / (1000 * 60);
+        const breakTime = item.break_minutes || 0; // 休憩時間が記録されていない場合は0とする
+        const minutesWorked =
+          (departureTime - attendanceTime) / (1000 * 60) - breakTime;
 
-        // 'yyyy-mm' 形式のキーを生成
         const yearMonthKey = `${attendanceTime.getFullYear()}-${String(
           attendanceTime.getMonth() + 1
         ).padStart(2, "0")}`;
 
-        // その月の合計時間を累計
         if (monthlyMinutes[yearMonthKey]) {
           monthlyMinutes[yearMonthKey] += minutesWorked;
+          monthlyBreakMinutes[yearMonthKey] += breakTime;
         } else {
           monthlyMinutes[yearMonthKey] = minutesWorked;
+          monthlyBreakMinutes[yearMonthKey] = breakTime;
         }
       }
-      // 始業時間のみの場合は無視する
     });
 
-    // 合計勤務時間を'時間と分'の形式で返す
     const monthlyWorkDurations = {};
     Object.keys(monthlyMinutes).forEach((key) => {
       const totalMinutes = Math.abs(monthlyMinutes[key]);
       const hours = Math.floor(totalMinutes / 60);
-      const minutes = Math.round(totalMinutes % 60); // 分を四捨五入
+      const minutes = Math.round(totalMinutes % 60);
       monthlyWorkDurations[key] = `${hours}h${minutes}m`;
     });
 
-    return monthlyWorkDurations;
+    // 休憩時間の合計も'時間と分'の形式で返す
+    const monthlyBreakDurations = {};
+    Object.keys(monthlyBreakMinutes).forEach((key) => {
+      const totalBreakMinutes = Math.abs(monthlyBreakMinutes[key]);
+      const breakHours = Math.floor(totalBreakMinutes / 60);
+      const breakMinutes = Math.round(totalBreakMinutes % 60);
+      monthlyBreakDurations[key] = `${breakHours}h${breakMinutes}m`;
+    });
+
+    return { monthlyWorkDurations, monthlyBreakDurations };
   };
 
   const timeWork = TimeCalculator(db);
@@ -141,19 +159,26 @@ const AdminStaffAttendanceShow = (props) => {
   const yesrMonth = currentMonthDays.map((dayData) =>
     dayData?.date
       ?.toLocaleDateString("ja-JP")
-      .replace("/", "-")
-      .replace("/", "-")
-      .slice(0, -2)
+      ?.replace("/", "-")
+      ?.replace("/", "-")
+      ?.slice(0, -2)
   );
 
-  // ページ遷移と同時にトップにスクロールする関数
-  const handleGoBack = () => {
-    // ページのトップにスクロールする
-    window.scrollTo(0, 0);
-    history.push("/admin_staff_attendance");
-  };
+  const [timeWorks, setTimeWork] = useState({
+    monthlyWorkDurations: {},
+    monthlyBreakDurations: {},
+  });
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  useEffect(() => {
+    const calculatedTime = TimeCalculator(db);
+    setTimeWork(calculatedTime);
+  }, [db]);
+
+  // ここでcurrentMonthDaysが定義されていると仮定します
+  const yearMonth = currentMonthDays[0]?.date
+    .toLocaleDateString("ja-JP")
+    .replace(/\//g, "-")
+    .slice(0, 7); // 'yyyy-MM'の形式になるようにスライス
 
   return (
     <>
@@ -215,37 +240,43 @@ const AdminStaffAttendanceShow = (props) => {
               <div className="align-middle inline-block min-w-full">
                 <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
+                    <thead className="bg-gray-50 sm:h-12">
+                      <tr className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         <th
                           scope="col"
-                          className="px-4 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-4 sm:py-2 sm:text-sm"
+                          className="flex-1 px-2 py-1 sm:px-4 sm:py-2 md:px-6 md:py-3"
                         >
-                          日付
+                          date
                         </th>
                         <th
                           scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48"
+                          className="flex-1 px-2 py-1 sm:px-4 sm:py-2 md:px-6 md:py-3"
                         >
-                          始業時間
+                          start time
                         </th>
                         <th
                           scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48"
+                          className="flex-1 px-2 py-1 sm:px-4 sm:py-2 md:px-6 md:py-3"
                         >
-                          退勤時間
+                          end time
                         </th>
                         <th
                           scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider smax:pr-1 smax:pl-1"
+                          className="flex-1 px-2 py-1 sm:px-4 sm:py-2 md:px-6 md:py-3"
                         >
-                          コメント
+                          break time
                         </th>
                         <th
                           scope="col"
-                          className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10 smax:w-36"
+                          className="flex-1 px-2 py-1 sm:px-4 sm:py-2 md:px-6 md:py-3"
                         >
-                          編集
+                          comment
+                        </th>
+                        <th
+                          scope="col"
+                          className="flex-1 px-2 py-1 sm:px-4 sm:py-2 md:px-6 md:py-3"
+                        >
+                          Edit
                         </th>
                       </tr>
                     </thead>
@@ -269,6 +300,9 @@ const AdminStaffAttendanceShow = (props) => {
                             {/* {dayData?.departure_time.split(" ")[0]}
                             <br /> */}
                             {dayData?.departure_time?.split(" ")[1]}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-gray-500">
+                            {dayData?.break_time}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm smax:text-xs text-gray-500">
                             {dayData?.comment}
@@ -314,6 +348,12 @@ const AdminStaffAttendanceShow = (props) => {
                           >
                             時間
                           </th>
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            休憩時間
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
@@ -322,16 +362,10 @@ const AdminStaffAttendanceShow = (props) => {
                             {count}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {Object.entries(timeWork).map(([key, value]) => {
-                              const keyYearMonth = key;
-                              if (yesrMonth[0] === keyYearMonth) {
-                                // 小数点以下2桁に丸めてから切り上げる
-                                const displayValue = value;
-                                return <div key={key}>{displayValue}</div>;
-                              } else {
-                                return null;
-                              }
-                            })}
+                            {timeWorks?.monthlyWorkDurations[yearMonth]}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {timeWorks?.monthlyBreakDurations[yearMonth]}
                           </td>
                         </tr>
                       </tbody>

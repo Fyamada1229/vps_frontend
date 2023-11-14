@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../Login.css";
 import {
   Form,
@@ -10,11 +11,12 @@ import {
   Card,
   Dropdown,
 } from "react-bootstrap";
+import { resetStore } from "../reducers/actions";
 import styles from "../styles.module.css";
 import { Link } from "react-router-dom";
 import { connect, useSelector, useDispatch } from "react-redux";
 import { Field, reduxForm, initialize, formValues, validate } from "redux-form";
-import { registerUser, loginUser } from "../reducers/usersReducer";
+import { registerAdmin } from "../reducers/usersReducer";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -29,18 +31,48 @@ const AdminNewConfrim = (props) => {
     i18n.changeLanguage(lng);
   };
 
+  // const onPost = async (event) => {
+  //   event.preventDefault();
+  //   setLoading(true);
+  //   try {
+  //     const response = await dispatch(registerAdmin(newUser)); // dispatchが解決した後に必要な処理を続ける
+  //     setLoading(false); // 必要に応じてローディング状態を解除
+
+  //     console.log(response);
+  //     reset();
+  //     history.push("/Admin");
+  //   } catch (error) {
+  //     setLoading(false);
+  //     if (error.response && error.response.data.message) {
+  //       alert(error.response.data.message);
+  //     } else {
+  //       console.error("登録処理ができません:", error);
+  //     }
+  //   }
+  // };
+
+  const [error, setError] = useState(false);
+
   const onPost = async (event) => {
     event.preventDefault();
     setLoading(true);
-    await dispatch(registerUser(newUser)).then(async () => {
-      const loggedIn = await dispatch(loginUser(newUser));
-      if (loggedIn) {
-        reset();
-        history.push("/Admin");
+    try {
+      const response = await axios.post(
+        "http://localhost:80/api/register",
+        newUser
+      );
+      // 登録成功時の処理
+      setLoading(false);
+      reset();
+      history.push("/Admin");
+    } catch (error) {
+      setLoading(false);
+      if (error.response && error.response.data.message) {
+        alert(error.response.data.message);
       } else {
-        setLoading(false);
+        console.error("登録処理ができません:", error);
       }
-    });
+    }
   };
 
   const reset = () => {
@@ -86,13 +118,13 @@ const AdminNewConfrim = (props) => {
               <Card className="border p-4 rounded" bg="light">
                 <Card.Body>
                   <Card.Title className="text-center mb-4">
-                    アカウント確認
+                    Account Confrim
                   </Card.Title>
                   <Form onSubmit={onPost}>
                     <Form.Group controlId="formBasicName" className="mb-4">
                       <Row>
                         <Col xs={4}>
-                          <Form.Label>名前</Form.Label>
+                          <Form.Label>Name</Form.Label>
                         </Col>
                         <Col xs={8} className="">
                           <Form.Control
@@ -114,13 +146,13 @@ const AdminNewConfrim = (props) => {
                     <Form.Group controlId="formBasicEmail" className="mb-4">
                       <Row>
                         <Col xs={4}>
-                          <Form.Label>メールアドレス</Form.Label>
+                          <Form.Label>Account ID</Form.Label>
                         </Col>
                         <Col xs={8}>
                           <Form.Control
                             plaintext
                             readOnly
-                            value={newUser?.email}
+                            value={newUser?.account_id}
                             className="p-0"
                             style={{
                               fontSize: "18px",
@@ -130,13 +162,17 @@ const AdminNewConfrim = (props) => {
                           />
                         </Col>
                       </Row>
-                      <Field name="email" component="input" type="hidden" />
+                      <Field
+                        name="account_id"
+                        component="input"
+                        type="hidden"
+                      />
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword" className="mb-4">
                       <Row>
                         <Col xs={4}>
-                          <Form.Label>パスワード</Form.Label>
+                          <Form.Label>Password</Form.Label>
                         </Col>
                         <Col xs={8}>
                           <Form.Control
@@ -161,16 +197,17 @@ const AdminNewConfrim = (props) => {
                           className={styles.buttonBack}
                           variant="secondary"
                         >
-                          戻る
+                          Back
                         </Button>
                       </Link>
-                      <Button
-                        className={styles.button}
-                        type="submit"
-                        variant="primary"
-                      >
-                        新規登録
-                      </Button>
+                      <div className="mt-10">
+                        <button
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 w-46 h-10 rounded"
+                          type="submit"
+                        >
+                          New Registration
+                        </button>
+                      </div>
                     </div>
                   </Form>
                 </Card.Body>

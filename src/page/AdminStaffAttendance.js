@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
+import showIcon from "../images/show.png";
 
 const AdminStaffAttendance = (props) => {
   const dispatch = useDispatch();
@@ -157,7 +158,7 @@ const AdminStaffAttendance = (props) => {
             style={{
               minWidth: "230px",
               backgroundColor: "#f0f0f0",
-              height: "calc(100vh - 60px)",
+              height: "calc(100vh)",
               paddingLeft: "15px",
             }}
           >
@@ -337,9 +338,11 @@ const AdminStaffAttendance = (props) => {
                             >
                               <Link
                                 to={`/admin_staff_attendance_show/${user.id}`}
-                                className="text-indigo-600 hover:text-indigo-900"
+                                className="text-indigo-600 hover:text-indigo-900 flex justify-center"
                               >
-                                detail
+                                <div className="w-5 h-5 text-right">
+                                  <img src={showIcon} alt="Show" />
+                                </div>
                               </Link>
                             </td>
                           </tr>
