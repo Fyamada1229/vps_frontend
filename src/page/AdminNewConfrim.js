@@ -31,26 +31,6 @@ const AdminNewConfrim = (props) => {
     i18n.changeLanguage(lng);
   };
 
-  // const onPost = async (event) => {
-  //   event.preventDefault();
-  //   setLoading(true);
-  //   try {
-  //     const response = await dispatch(registerAdmin(newUser)); // dispatchが解決した後に必要な処理を続ける
-  //     setLoading(false); // 必要に応じてローディング状態を解除
-
-  //     console.log(response);
-  //     reset();
-  //     history.push("/Admin");
-  //   } catch (error) {
-  //     setLoading(false);
-  //     if (error.response && error.response.data.message) {
-  //       alert(error.response.data.message);
-  //     } else {
-  //       console.error("登録処理ができません:", error);
-  //     }
-  //   }
-  // };
-
   const [error, setError] = useState(false);
 
   const onPost = async (event) => {
